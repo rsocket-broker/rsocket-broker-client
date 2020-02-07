@@ -5,8 +5,6 @@ plugins {
 group = 'io.rsocket'
 version = '0.0.1-SNAPSHOT'
 
-
-
 subprojects {
 	apply plugin: 'java'
 	apply plugin: 'io.spring.dependency-management'
@@ -38,4 +36,8 @@ subprojects {
 		useJUnitPlatform()
 	}
 
+}
+
+wrapper {
+	distributionType = Wrapper.DistributionType.ALL
 }
