@@ -2,3 +2,4 @@ rootProject.name = 'rsocket-routing-client'
 
 include "rsocket-routing-common"
 include "rsocket-routing-frames"
+include "rsocket-routing-client"

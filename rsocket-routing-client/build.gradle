@@ -1,0 +1,9 @@
+description = 'RSocket Routing Client'
+
+dependencies {
+   implementation project(':rsocket-routing-common')
+	implementation 'io.projectreactor.netty:reactor-netty'
+
+	testImplementation 'org.junit.jupiter:junit-jupiter'
+	testImplementation 'org.assertj:assertj-core'
+}
