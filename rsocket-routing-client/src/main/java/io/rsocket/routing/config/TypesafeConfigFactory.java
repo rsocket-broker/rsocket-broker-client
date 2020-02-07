@@ -14,10 +14,21 @@
  * limitations under the License.
  */
 
-package io.rsocket.routing.client;
+package io.rsocket.routing.config;
 
-import java.io.Closeable;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigBeanFactory;
+import com.typesafe.config.ConfigFactory;
 
-public interface RoutingClient extends Closeable {
+public class TypesafeConfigFactory {
 
+	public static RoutingClientConfiguration load() {
+		return load(ConfigFactory.load());
+	}
+
+	public static RoutingClientConfiguration load(Config config) {
+		RoutingClientConfiguration configuration = ConfigBeanFactory.create(config
+				.getConfig(RoutingClientConfiguration.CONFIG_PREFIX), RoutingClientConfiguration.class);
+		return configuration;
+	}
 }

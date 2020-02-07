@@ -14,10 +14,32 @@
  * limitations under the License.
  */
 
-package io.rsocket.routing.client;
+package io.rsocket.routing.config;
 
-import java.io.Closeable;
+import java.util.StringJoiner;
 
-public interface RoutingClient extends Closeable {
+public class RoutingClientConfiguration {
 
+	public static final String CONFIG_PREFIX = "io.rsocket.routing.client";
+
+	private int port;
+
+	public RoutingClientConfiguration() {
+	}
+
+	public int getPort() {
+		return this.port;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
+	}
+
+	@Override
+	public String toString() {
+		return new StringJoiner(", ", RoutingClientConfiguration.class
+				.getSimpleName() + "[", "]")
+				.add("port=" + port)
+				.toString();
+	}
 }

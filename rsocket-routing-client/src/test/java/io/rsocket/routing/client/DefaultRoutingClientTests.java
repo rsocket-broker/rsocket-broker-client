@@ -16,8 +16,22 @@
 
 package io.rsocket.routing.client;
 
-import java.io.Closeable;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public interface RoutingClient extends Closeable {
+import static org.assertj.core.api.Assertions.assertThat;
 
+public class DefaultRoutingClientTests {
+
+	private DefaultRoutingClient client;
+
+	@BeforeEach
+	public void setup() {
+		client = new DefaultRoutingClient();
+	}
+
+	@Test
+	public void clientWorks() {
+		assertThat(client.getConfig().getPort()).isEqualTo(8001);
+	}
 }

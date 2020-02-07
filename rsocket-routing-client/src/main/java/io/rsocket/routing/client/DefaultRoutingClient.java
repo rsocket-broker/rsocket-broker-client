@@ -16,8 +16,29 @@
 
 package io.rsocket.routing.client;
 
-import java.io.Closeable;
+import java.io.IOException;
 
-public interface RoutingClient extends Closeable {
+import io.rsocket.routing.config.RoutingClientConfiguration;
+import io.rsocket.routing.config.TypesafeConfigFactory;
 
+public class DefaultRoutingClient implements RoutingClient {
+
+	private final RoutingClientConfiguration config;
+
+	public DefaultRoutingClient() {
+		this(TypesafeConfigFactory.load());
+	}
+
+	protected DefaultRoutingClient(RoutingClientConfiguration config) {
+		this.config = config;
+	}
+
+	/* for testing */ RoutingClientConfiguration getConfig() {
+		return this.config;
+	}
+
+	@Override
+	public void close() throws IOException {
+
+	}
 }

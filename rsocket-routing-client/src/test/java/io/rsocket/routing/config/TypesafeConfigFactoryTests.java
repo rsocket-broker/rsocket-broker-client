@@ -14,10 +14,25 @@
  * limitations under the License.
  */
 
-package io.rsocket.routing.client;
+package io.rsocket.routing.config;
 
-import java.io.Closeable;
+import com.typesafe.config.ConfigFactory;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public interface RoutingClient extends Closeable {
+import static org.assertj.core.api.Assertions.assertThat;
 
+public class TypesafeConfigFactoryTests {
+
+	private RoutingClientConfiguration config;
+
+	@BeforeEach
+	public void setup() {
+		config = TypesafeConfigFactory.load(ConfigFactory.load("typesafetest1"));
+	}
+
+	@Test
+	public void configWorks() {
+		assertThat(config.getPort()).isEqualTo(4444);
+	}
 }
