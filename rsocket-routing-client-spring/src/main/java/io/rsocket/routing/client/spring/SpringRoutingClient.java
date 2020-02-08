@@ -14,32 +14,27 @@
  * limitations under the License.
  */
 
-package io.rsocket.routing.config;
+package io.rsocket.routing.client.spring;
 
-import java.util.StringJoiner;
+import java.io.IOException;
 
-public class RoutingClientConfiguration {
+import io.rsocket.routing.client.RoutingClient;
+import io.rsocket.routing.config.RoutingClientConfiguration;
 
-	public static final String CONFIG_PREFIX = "io.rsocket.routing.client";
+public class SpringRoutingClient implements RoutingClient {
 
-	private int port = 8001;
+	private final RoutingClientConfiguration config;
 
-	public RoutingClientConfiguration() {
+	public SpringRoutingClient(RoutingClientConfiguration config) {
+		this.config = config;
 	}
 
-	public int getPort() {
-		return this.port;
-	}
-
-	public void setPort(int port) {
-		this.port = port;
+	/* for testing */ RoutingClientConfiguration getConfig() {
+		return this.config;
 	}
 
 	@Override
-	public String toString() {
-		return new StringJoiner(", ", RoutingClientConfiguration.class
-				.getSimpleName() + "[", "]")
-				.add("port=" + port)
-				.toString();
+	public void close() throws IOException {
+
 	}
 }
