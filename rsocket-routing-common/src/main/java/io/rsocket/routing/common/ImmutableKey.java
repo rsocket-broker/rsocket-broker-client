@@ -17,63 +17,43 @@
 package io.rsocket.routing.common;
 
 import java.util.Objects;
-import java.util.StringJoiner;
+
+import static java.util.Objects.requireNonNull;
 
 public class ImmutableKey implements Key {
 
-	private final WellKnownKey wellKnownKey;
-
 	private final String key;
 
-	public ImmutableKey(WellKnownKey wellKnownKey) {
-		this(wellKnownKey, null);
-	}
-
-	public ImmutableKey(String key) {
-		this(null, key);
-	}
-
-	private ImmutableKey(WellKnownKey wellKnownKey, String key) {
-		this.wellKnownKey = wellKnownKey;
+	ImmutableKey(String key) {
+		requireNonNull(key);
 		this.key = key;
 	}
 
-	public WellKnownKey getWellKnownKey() {
-		return this.wellKnownKey;
-	}
-
+	@Override
 	public String getKey() {
-		return this.key;
+		return key;
 	}
 
 	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		Key key1 = (Key) o;
-		return this.wellKnownKey == key1.getWellKnownKey()
-				&& Objects.equals(this.key, key1.getKey());
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(this.wellKnownKey, this.key);
+	public WellKnownKey getWellKnownKey() {
+		return null;
 	}
 
 	@Override
 	public String toString() {
-		StringJoiner joiner = new StringJoiner(", ", "[", "]");
-		if (wellKnownKey != null) {
-			joiner.add(wellKnownKey.toString());
-			joiner.add(String.format("0x%02x", wellKnownKey.getIdentifier()));
-		}
-		if (key != null) {
-			joiner.add("'" + key + "'");
-		}
-		return joiner.toString();
+		return key;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		ImmutableKey that = (ImmutableKey) o;
+		return Objects.equals(key, that.key);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(key);
 	}
 }

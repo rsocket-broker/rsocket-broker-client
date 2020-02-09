@@ -16,7 +16,6 @@
 
 package io.rsocket.routing.frames;
 
-import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 
 import io.netty.buffer.ByteBuf;
@@ -60,23 +59,5 @@ public class FlyweightUtils {
 		}
 
 		return i;
-	}
-
-	static void encodeId(ByteBuf byteBuf, BigInteger bigInteger) {
-		byte[] idBytes = bigInteger.toByteArray();
-		// truncate or pad to 16 bytes or 128 bits
-		// byte[] normalizedBytes = Arrays.copyOf(idBytes, 16);
-		byte[] normalizedBytes = new byte[ID_BYTES];
-		// right shift
-		int destPos = normalizedBytes.length - idBytes.length;
-		System.arraycopy(idBytes, 0, normalizedBytes, destPos, idBytes.length);
-
-		byteBuf.writeBytes(normalizedBytes);
-	}
-
-	static BigInteger decodeId(ByteBuf byteBuf, int offset) {
-		byte[] idBytes = new byte[ID_BYTES];
-		byteBuf.getBytes(offset, idBytes, 0, ID_BYTES);
-		return new BigInteger(idBytes);
 	}
 }

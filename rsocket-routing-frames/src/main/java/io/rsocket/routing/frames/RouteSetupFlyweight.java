@@ -18,30 +18,31 @@ package io.rsocket.routing.frames;
 
 import java.math.BigInteger;
 import java.util.Objects;
+import java.util.UUID;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.rsocket.routing.common.Tags;
-
-import static io.rsocket.routing.frames.FlyweightUtils.decodeByteStringLength;
-import static io.rsocket.routing.frames.FlyweightUtils.decodeId;
-import static io.rsocket.routing.frames.FlyweightUtils.encodeByteString;
-import static io.rsocket.routing.frames.FlyweightUtils.encodeId;
+import io.rsocket.frame.VersionFlyweight;
 
 /**
  * https://github.com/rsocket/rsocket/blob/feature/rf/Extensions/Routing-And-Forwarding.md#route_setup
  */
 public class RouteSetupFlyweight {
+	public static final int CURRENT_VERSION = VersionFlyweight.encode(0, 1);
 
-	public static ByteBuf encode(ByteBufAllocator allocator, BigInteger routeId, String serviceName, Tags tags) {
+	public static ByteBuf encode(ByteBufAllocator allocator, UUID routeId, String serviceName, Tags tags) {
 		Objects.requireNonNull(routeId, "routeId may not be null");
 		Objects.requireNonNull(serviceName, "serviceName may not be null");
 		Objects.requireNonNull(tags, "tags may not be null");
 
-		ByteBuf byteBuf = FrameHeaderFlyweight.encode(allocator, FrameType.ROUTE_SETUP);
-		encodeId(byteBuf, routeId);
+		ByteBuf byteBuf = FrameHeaderFlyweight.encode(allocator, FrameType.ROUTE_SETUP, 0);
 
-		encodeByteString(byteBuf, serviceName);
+		byteBuf.writeInt(CURRENT_VERSION)
+				.writeLong(routeId.getMostSignificantBits())
+				.writeLong(routeId.getLeastSignificantBits());
+
+		FlyweightUtils.encodeByteString(byteBuf, serviceName);
 
 		TagsFlyweight.encode(byteBuf, tags);
 

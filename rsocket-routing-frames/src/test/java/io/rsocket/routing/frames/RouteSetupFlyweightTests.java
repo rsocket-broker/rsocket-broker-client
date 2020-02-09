@@ -16,7 +16,7 @@
 
 package io.rsocket.routing.frames;
 
-import java.math.BigInteger;
+import java.util.UUID;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
@@ -30,12 +30,11 @@ class RouteSetupFlyweightTests {
 
 	@Test
 	void testEncodeDecode() {
-		BigInteger routeId = BigInteger.valueOf(123L);
+		UUID routeId = UUID.randomUUID();
 		String serviceName = "myService";
-		Tags tags = Tags.builder().with(WellKnownKey.MAJOR_VERSION, "1")
-				.with(WellKnownKey.MINOR_VERSION, "0")
-				.with("mycustomtag", "mycustomtagvalue")
-				.build();
+		Tags tags = Tags.of(WellKnownKey.MAJOR_VERSION, "1")
+				.and(WellKnownKey.MINOR_VERSION, "0")
+				.and("mycustomtag", "mycustomtagvalue");
 		ByteBuf encoded = RouteSetupFlyweight
 				.encode(ByteBufAllocator.DEFAULT, routeId, serviceName, tags);
 		assertThat(RouteSetupFlyweight.routeId(encoded)).isEqualTo(routeId);

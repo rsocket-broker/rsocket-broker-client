@@ -20,10 +20,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * https://github.com/rsocket/rsocket/blob/feature/rf/Extensions/Routing-And-Forwarding.md#well-known-keys
  */
-public enum WellKnownKey {
+public enum WellKnownKey implements Key {
 
 	// CHECKSTYLE:OFF
 	// @formatter:off
@@ -57,8 +59,11 @@ public enum WellKnownKey {
 	SHARD_METHOD("io.rsocket.routing.ShardMethod", (byte) 0x1C),
 	STICKY_ROUTE_KEY("io.rsocket.routing.StickyRouteKey", (byte) 0x1D),
 	LB_METHOD("io.rsocket.routing.LBMethod", (byte) 0x1E),
-	BROKER_EXTENSION("Broker Implementation Extension Key", (byte) 0x1E),
-	WELL_KNOWN_EXTENSION("Well Known Extension Key", (byte) 0x1E);
+
+	// ... reserved for future use ...
+
+	BROKER_EXTENSION("Broker Implementation Extension Key", (byte) 0x7C),
+	WELL_KNOWN_EXTENSION("Well Known Extension Key", (byte) 0x7F);
 	// @formatter:on
 	// CHECKSTYLE:ON
 
@@ -66,7 +71,7 @@ public enum WellKnownKey {
 	static final Map<String, WellKnownKey> TYPES_BY_STRING;
 
 	static {
-		// precompute an array of all valid mime ids,
+		// precompute an array of all valid key ids,
 		// filling the blanks with the RESERVED enum
 		TYPES_BY_ID = new WellKnownKey[128]; // 0-127 inclusive
 		Arrays.fill(TYPES_BY_ID, UNKNOWN_RESERVED_KEY);
@@ -76,21 +81,17 @@ public enum WellKnownKey {
 		for (WellKnownKey value : values()) {
 			if (value.getIdentifier() >= 0) {
 				TYPES_BY_ID[value.getIdentifier()] = value;
-				TYPES_BY_STRING.put(value.getString(), value);
+				TYPES_BY_STRING.put(value.getKey(), value);
 			}
 		}
 	}
 
 	private final byte identifier;
-
 	private final String str;
-
-	private final Key key;
 
 	WellKnownKey(String str, byte identifier) {
 		this.str = str;
 		this.identifier = identifier;
-		this.key = new ImmutableKey(this);
 	}
 
 	public static WellKnownKey fromIdentifier(int id) {
@@ -100,42 +101,39 @@ public enum WellKnownKey {
 		return TYPES_BY_ID[id];
 	}
 
-	public static WellKnownKey fromMimeType(String mimeType) {
-		if (mimeType == null) {
-			throw new IllegalArgumentException("type must be non-null");
-		}
-
-		// force UNPARSEABLE if by chance UNKNOWN_RESERVED_MIME_TYPE's text has been used
-		if (mimeType.equals(UNKNOWN_RESERVED_KEY.str)) {
+	public static WellKnownKey fromString(String key) {
+		requireNonNull(key);
+		// force UNPARSEABLE if by chance UNKNOWN_RESERVED_KEY's text has been used
+		if (key.equals(UNKNOWN_RESERVED_KEY.str)) {
 			return UNPARSEABLE_KEY;
 		}
 
-		return TYPES_BY_STRING.getOrDefault(mimeType, UNPARSEABLE_KEY);
+		return TYPES_BY_STRING.getOrDefault(key, UNPARSEABLE_KEY);
 	}
 
 	/**
-	 * @return the byte identifier of the mime type, guaranteed to be positive or zero.
+	 * @return the byte identifier of the key, guaranteed to be positive or zero.
 	 */
 	public byte getIdentifier() {
 		return identifier;
 	}
 
 	/**
-	 * @return the mime type represented as a {@link String}, which is made of US_ASCII
+	 * @return the key represented as a {@link String}, which is made of US_ASCII
 	 * compatible characters only
 	 */
-	public String getString() {
+	@Override
+	public String getKey() {
 		return str;
 	}
 
-	public Key getKey() {
-		return this.key;
+	@Override
+	public WellKnownKey getWellKnownKey() {
+		return this;
 	}
 
-	/** @see #getString() */
 	@Override
 	public String toString() {
 		return str;
 	}
-
 }

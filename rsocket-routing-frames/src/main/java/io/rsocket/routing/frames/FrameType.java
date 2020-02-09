@@ -16,6 +16,8 @@
 
 package io.rsocket.routing.frames;
 
+import java.util.Arrays;
+
 /**
  * https://github.com/rsocket/rsocket/blob/feature/rf/Extensions/Routing-And-Forwarding.md#frame-types
  */
@@ -52,29 +54,84 @@ public enum FrameType {
 	 * A frame that contain information forwarding a message from an origin to a
 	 * destination. This frame is intended for the metadata field.
 	 */
-	ADDRESS(0x05);
+	UNICAST(0x05, Flags.IS_ENCRYPTABLE),
 
-	private static FrameType[] frameTypesById;
+	/**
+	 * A frame that contain information forwarding a message from an origin to a
+	 * destination. This frame is intended for the metadata field.
+	 */
+	MULTICAST(0x06, Flags.IS_ENCRYPTABLE),
+
+	/**
+	 * A frame that contain information forwarding a message from an origin to a
+	 * destination. This frame is intended for the metadata field.
+	 */
+	SHARD(0x05, Flags.IS_ENCRYPTABLE);
+
+	private static final FrameType[] FRAME_TYPES_BY_ENCODED_TYPE;
 
 	static {
-		frameTypesById = new FrameType[values().length];
+		FRAME_TYPES_BY_ENCODED_TYPE = new FrameType[getMaximumEncodedType() + 1];
 
 		for (FrameType frameType : values()) {
-			frameTypesById[frameType.id] = frameType;
+			FRAME_TYPES_BY_ENCODED_TYPE[frameType.encodedType] = frameType;
 		}
 	}
 
-	private final int id;
+	private final int encodedType;
+	private final int flags;
 
-	FrameType(int id) {
-		this.id = id;
+	FrameType(int encodedType) {
+		this(encodedType, Flags.EMPTY);
 	}
 
-	public int getId() {
-		return this.id;
+	FrameType(int encodedType, int flags) {
+		this.encodedType = encodedType;
+		this.flags = flags;
 	}
 
-	public static FrameType from(int id) {
-		return frameTypesById[id];
+	/**
+	 * Returns the {@code FrameType} that matches the specified {@code encodedType}.
+	 *
+	 * @param encodedType the encoded type
+	 * @return the {@code FrameType} that matches the specified {@code encodedType}
+	 */
+	public static FrameType fromEncodedType(int encodedType) {
+		FrameType frameType = FRAME_TYPES_BY_ENCODED_TYPE[encodedType];
+
+		if (frameType == null) {
+			throw new IllegalArgumentException(String.format("Frame type %d is unknown", encodedType));
+		}
+
+		return frameType;
+	}
+
+	private static int getMaximumEncodedType() {
+		return Arrays.stream(values()).mapToInt(frameType -> frameType.encodedType).max().orElse(0);
+	}
+
+	/**
+	 * Returns the encoded type.
+	 *
+	 * @return the encoded type
+	 */
+	public int getEncodedType() {
+		return encodedType;
+	}
+
+	/**
+	 * Whether the frame type is encryptable.
+	 *
+	 * @return whether the frame type is encryptable
+	 */
+	public boolean isEncryptable() {
+		return Flags.IS_ENCRYPTABLE == (flags & Flags.IS_ENCRYPTABLE);
+	}
+
+	private static class Flags {
+		private static final int EMPTY = 0b00000;
+		private static final int IS_ENCRYPTABLE = 0b00001;
+
+		private Flags() {}
 	}
 }

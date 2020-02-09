@@ -13,20 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package io.rsocket.routing.common;
 
-public interface Key {
-	WellKnownKey getWellKnownKey();
+public interface Tag extends Comparable<Tag> {
+  Key getKey();
 
-	String getKey();
+  String getValue();
 
-	static Key of(String key) {
-		WellKnownKey wk = WellKnownKey.fromString(key);
-		if (wk == WellKnownKey.UNPARSEABLE_KEY) {
-			return new ImmutableKey(key);
-		} else {
-			return wk;
-		}
-	}
+  static Tag of(Key key, String value) {
+    return new ImmutableTag(key, value);
+  }
+
+  static Tag of(String key, String value) {
+    return new ImmutableTag(key, value);
+  }
+
+  @Override
+  default int compareTo(Tag t) {
+    Key k1 = getKey();
+    Key k2 = t.getKey();
+    return k1.getKey().compareTo(k2.getKey());
+  }
 }

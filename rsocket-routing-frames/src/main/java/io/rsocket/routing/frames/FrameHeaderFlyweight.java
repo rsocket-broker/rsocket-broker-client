@@ -23,38 +23,42 @@ import io.netty.buffer.ByteBufAllocator;
  * https://github.com/rsocket/rsocket/blob/feature/rf/Extensions/Routing-And-Forwarding.md#framing-header-format
  */
 public class FrameHeaderFlyweight {
+	/** (E)ncrypted flag: a value of 1 indicates the frame is encrypted */
+	public static final int FLAGS_E = 0b01_0000_0000;
 
-	public static final short MAJOR_VERSION = 0;
-	public static final short MINOR_VERSION = 1;
+	private static final int FRAME_FLAGS_MASK = 0b0000_0011_1111_1111;
+	private static final int FRAME_TYPE_BITS = 6;
+	private static final int FRAME_TYPE_SHIFT = 16 - FRAME_TYPE_BITS;
+	private static final int HEADER_SIZE = Short.BYTES;
 
-	private static final int MAJOR_VERSION_SIZE = Short.BYTES;
-	private static final int MINOR_VERSION_SIZE = Short.BYTES;
-	private static final int FRAME_TYPE_SIZE = Short.BYTES;
+	private FrameHeaderFlyweight() {}
 
-	public static final int BYTES = MAJOR_VERSION_SIZE + MINOR_VERSION_SIZE + FRAME_TYPE_SIZE;
+	public static ByteBuf encode(
+			final ByteBufAllocator allocator, final FrameType frameType, int flags) {
+		if (!frameType.isEncryptable() && ((flags & FLAGS_E) == FLAGS_E)) {
+			throw new IllegalStateException("bad value for encrypted flag");
+		}
 
-	public static ByteBuf encode(ByteBufAllocator allocator, FrameType frameType) {
-		return encode(allocator, MAJOR_VERSION, MINOR_VERSION, frameType);
+		short typeAndFlags = (short) (frameType.getEncodedType() << FRAME_TYPE_SHIFT | (short) flags);
+
+		return allocator.buffer().writeShort(typeAndFlags);
 	}
 
-	public static ByteBuf encode(ByteBufAllocator allocator, short majorVersion, short minorVersion, FrameType frameType) {
-		return allocator.buffer()
-				.writeShort(majorVersion)
-				.writeShort(minorVersion)
-				//TODO: first 6 bits only?
-				.writeShort(frameType.getId());
+	public static int flags(final ByteBuf byteBuf) {
+		short typeAndFlags = byteBuf.getShort(0);
+		return typeAndFlags & FRAME_FLAGS_MASK;
 	}
 
-	public static short majorVersion(ByteBuf byteBuf) {
-		return byteBuf.getShort(0);
-	}
-
-	public static short minorVersion(ByteBuf byteBuf) {
-		return byteBuf.getShort(MAJOR_VERSION_SIZE);
+	public static boolean isEncrypted(ByteBuf byteBuf) {
+		return (flags(byteBuf) & FLAGS_E) == FLAGS_E;
 	}
 
 	public static FrameType frameType(ByteBuf byteBuf) {
-		short id = byteBuf.getShort(MAJOR_VERSION_SIZE + MINOR_VERSION_SIZE);
-		return FrameType.from(id);
+		int typeAndFlags = byteBuf.getShort(0);
+		return FrameType.fromEncodedType(typeAndFlags >> FRAME_TYPE_SHIFT);
+	}
+
+	public static int size() {
+		return HEADER_SIZE;
 	}
 }

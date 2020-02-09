@@ -2,8 +2,8 @@ description = 'RSocket Routing Frames'
 
 dependencies {
 	implementation project(':rsocket-routing-common')
+	implementation 'io.rsocket:rsocket-core'
 
-	implementation 'io.projectreactor.netty:reactor-netty'
 	testImplementation 'org.junit.jupiter:junit-jupiter'
 	testImplementation 'org.assertj:assertj-core'
 }

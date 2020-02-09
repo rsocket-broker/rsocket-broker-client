@@ -17,9 +17,11 @@
 package io.rsocket.routing.frames;
 
 import java.math.BigInteger;
+import java.util.UUID;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
+import io.rsocket.routing.common.Tag;
 import io.rsocket.routing.common.Tags;
 import io.rsocket.routing.common.WellKnownKey;
 import org.junit.jupiter.api.Test;
@@ -30,13 +32,12 @@ class AddressFlyweightTests {
 
 	@Test
 	void testEncodeDecode() {
-		BigInteger originRouteId = BigInteger.valueOf(123L);
-		Tags metadata = Tags.builder().with("mycustommetadata", "mycustommetadatavalue")
-				.build();
-		Tags tags = Tags.builder().with(WellKnownKey.MAJOR_VERSION, "1")
-				.with(WellKnownKey.MINOR_VERSION, "0")
-				.with("mycustomtag", "mycustomtagvalue")
-				.build();
+		UUID originRouteId = UUID.randomUUID();
+		Tags metadata = Tags.of("mycustommetadata", "mycustommetadatavalue");
+		Tags tags = Tags.of(
+				Tag.of(WellKnownKey.MAJOR_VERSION, "1"),
+				Tag.of(WellKnownKey.MINOR_VERSION, "0"),
+				Tag.of("mycustomtag", "mycustomtagvalue"));
 		ByteBuf encoded = AddressFlyweight
 				.encode(ByteBufAllocator.DEFAULT, originRouteId, metadata, tags);
 		assertThat(AddressFlyweight.originRouteId(encoded)).isEqualTo(originRouteId);

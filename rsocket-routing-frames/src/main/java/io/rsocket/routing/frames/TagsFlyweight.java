@@ -24,6 +24,7 @@ import java.util.Objects;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.rsocket.routing.common.Key;
+import io.rsocket.routing.common.Tag;
 import io.rsocket.routing.common.Tags;
 import io.rsocket.routing.common.WellKnownKey;
 
@@ -35,11 +36,11 @@ public class TagsFlyweight {
 	public static ByteBuf encode(ByteBuf byteBuf, Tags tags) {
 		Objects.requireNonNull(byteBuf, "byteBuf may not be null");
 
-		Iterator<Map.Entry<Key, String>> it = tags.asMap().entrySet().iterator();
+		Iterator<Tag> it = tags.iterator();
 
 		while (it.hasNext()) {
-			Map.Entry<Key, String> entry = it.next();
-			Key key = entry.getKey();
+			Tag tag = it.next();
+			Key key = tag.getKey();
 			if (key.getWellKnownKey() != null) {
 				byte id = key.getWellKnownKey().getIdentifier();
 				int keyLength = WELL_KNOWN_TAG | id;
@@ -60,7 +61,7 @@ public class TagsFlyweight {
 
 			boolean hasMoreTags = it.hasNext();
 
-			String value = entry.getValue();
+			String value = tag.getValue();
 			int valueLength = ByteBufUtil.utf8Bytes(value);
 			if (valueLength == 0 || valueLength > MAX_TAG_LENGTH) {
 				continue;
@@ -81,11 +82,11 @@ public class TagsFlyweight {
 
 	public static Tags decode(int offset, ByteBuf byteBuf) {
 
-		Tags.Builder builder = Tags.builder();
+		Tags tags = Tags.empty();
 
 		// this means we've reached the end of the buffer
 		if (offset >= byteBuf.writerIndex()) {
-			return builder.build();
+			return tags;
 		}
 
 		boolean hasMoreTags = true;
