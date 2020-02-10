@@ -1,4 +1,4 @@
-description = 'RSocket Routing Commons'
+description = 'RSocket Routing Common'
 
 dependencies {
 	implementation 'io.projectreactor.netty:reactor-netty'
