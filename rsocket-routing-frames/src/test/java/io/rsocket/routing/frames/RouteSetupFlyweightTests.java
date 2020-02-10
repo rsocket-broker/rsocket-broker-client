@@ -16,10 +16,9 @@
 
 package io.rsocket.routing.frames;
 
-import java.math.BigInteger;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
+import io.rsocket.routing.common.Id;
 import io.rsocket.routing.common.Tags;
 import io.rsocket.routing.common.WellKnownKey;
 import org.junit.jupiter.api.Test;
@@ -30,7 +29,23 @@ class RouteSetupFlyweightTests {
 
 	@Test
 	void testEncodeDecode() {
-		BigInteger routeId = BigInteger.valueOf(123L);
+		Id routeId = Id.random();
+		assertEncodeDecode(routeId);
+	}
+
+	@Test
+	void testEncodeDecodeMaxId() {
+		Id routeId = new Id(Long.MAX_VALUE, Long.MAX_VALUE);
+		assertEncodeDecode(routeId);
+	}
+
+	@Test
+	void testEncodeDecodeMinId() {
+		Id routeId = new Id(0, 0);
+		assertEncodeDecode(routeId);
+	}
+
+	private void assertEncodeDecode(Id routeId) {
 		String serviceName = "myService";
 		Tags tags = Tags.builder().with(WellKnownKey.MAJOR_VERSION, "1")
 				.with(WellKnownKey.MINOR_VERSION, "0")

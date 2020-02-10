@@ -16,10 +16,9 @@
 
 package io.rsocket.routing.frames;
 
-import java.math.BigInteger;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
+import io.rsocket.routing.common.Id;
 import io.rsocket.routing.common.Tags;
 import io.rsocket.routing.common.WellKnownKey;
 import org.junit.jupiter.api.Test;
@@ -30,8 +29,8 @@ class RouteJoinFlyweightTests {
 
 	@Test
 	void testEncodeDecode() {
-		BigInteger brokerId = BigInteger.valueOf(456L);
-		BigInteger routeId = BigInteger.valueOf(123L);
+		Id brokerId = Id.random();
+		Id routeId = Id.random();
 		long timestamp = System.currentTimeMillis();
 		String serviceName = "myService";
 		Tags tags = Tags.builder().with(WellKnownKey.MAJOR_VERSION, "1")

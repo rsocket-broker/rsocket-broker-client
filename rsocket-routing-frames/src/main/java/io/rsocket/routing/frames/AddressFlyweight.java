@@ -16,11 +16,11 @@
 
 package io.rsocket.routing.frames;
 
-import java.math.BigInteger;
 import java.util.Objects;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
+import io.rsocket.routing.common.Id;
 import io.rsocket.routing.common.Tags;
 
 import static io.rsocket.routing.frames.FlyweightUtils.decodeId;
@@ -31,7 +31,7 @@ import static io.rsocket.routing.frames.FlyweightUtils.encodeId;
  */
 public class AddressFlyweight {
 
-	public static ByteBuf encode(ByteBufAllocator allocator, BigInteger originRouteId, Tags metadata, Tags tags) {
+	public static ByteBuf encode(ByteBufAllocator allocator, Id originRouteId, Tags metadata, Tags tags) {
 		Objects.requireNonNull(originRouteId, "originRouteId may not be null");
 		Objects.requireNonNull(tags, "tags may not be null");
 
@@ -46,7 +46,7 @@ public class AddressFlyweight {
 		return byteBuf;
 	}
 
-	public static BigInteger originRouteId(ByteBuf byteBuf) {
+	public static Id originRouteId(ByteBuf byteBuf) {
 		return decodeId(byteBuf, FrameHeaderFlyweight.BYTES);
 	}
 

@@ -16,10 +16,9 @@
 
 package io.rsocket.routing.frames;
 
-import java.math.BigInteger;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
+import io.rsocket.routing.common.Id;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,8 +27,8 @@ class RouteRemoveFlyweightTests {
 
 	@Test
 	void testEncodeDecode() {
-		BigInteger brokerId = BigInteger.valueOf(456L);
-		BigInteger routeId = BigInteger.valueOf(123L);
+		Id brokerId = Id.random();
+		Id routeId = Id.random();
 		long timestamp = System.currentTimeMillis();
 
 		ByteBuf encoded = RouteRemoveFlyweight

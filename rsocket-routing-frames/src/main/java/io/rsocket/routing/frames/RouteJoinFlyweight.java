@@ -16,11 +16,11 @@
 
 package io.rsocket.routing.frames;
 
-import java.math.BigInteger;
 import java.util.Objects;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
+import io.rsocket.routing.common.Id;
 import io.rsocket.routing.common.Tags;
 
 import static io.rsocket.routing.frames.FlyweightUtils.decodeByteStringLength;
@@ -33,7 +33,7 @@ import static io.rsocket.routing.frames.FlyweightUtils.encodeId;
  */
 public class RouteJoinFlyweight {
 
-	public static ByteBuf encode(ByteBufAllocator allocator, BigInteger brokerId, BigInteger routeId, long timestamp, String serviceName, Tags tags) {
+	public static ByteBuf encode(ByteBufAllocator allocator, Id brokerId, Id routeId, long timestamp, String serviceName, Tags tags) {
 		Objects.requireNonNull(brokerId, "brokerId may not be null");
 		Objects.requireNonNull(routeId, "routeId may not be null");
 		Objects.requireNonNull(serviceName, "serviceName may not be null");
@@ -51,11 +51,11 @@ public class RouteJoinFlyweight {
 		return byteBuf;
 	}
 
-	public static BigInteger brokerId(ByteBuf byteBuf) {
+	public static Id brokerId(ByteBuf byteBuf) {
 		return decodeId(byteBuf, FrameHeaderFlyweight.BYTES);
 	}
 
-	public static BigInteger routeId(ByteBuf byteBuf) {
+	public static Id routeId(ByteBuf byteBuf) {
 		int offset = FrameHeaderFlyweight.BYTES + FlyweightUtils.ID_BYTES;
 		return decodeId(byteBuf, offset);
 	}
