@@ -50,7 +50,7 @@ class RouteSetupFlyweightTests {
 		Tags tags = Tags.builder().with(WellKnownKey.MAJOR_VERSION, "1")
 				.with(WellKnownKey.MINOR_VERSION, "0")
 				.with("mycustomtag", "mycustomtagvalue")
-				.build();
+				.buildTags();
 		ByteBuf encoded = RouteSetupFlyweight
 				.encode(ByteBufAllocator.DEFAULT, routeId, serviceName, tags);
 		assertThat(RouteSetupFlyweight.routeId(encoded)).isEqualTo(routeId);

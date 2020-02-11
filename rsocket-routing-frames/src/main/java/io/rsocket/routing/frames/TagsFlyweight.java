@@ -85,7 +85,7 @@ public class TagsFlyweight {
 
 		// this means we've reached the end of the buffer
 		if (offset >= byteBuf.writerIndex()) {
-			return builder.build();
+			return builder.buildTags();
 		}
 
 		boolean hasMoreTags = true;
@@ -121,7 +121,7 @@ public class TagsFlyweight {
 			builder.with(key, value);
 		}
 
-		return builder.build();
+		return builder.buildTags();
 	}
 
 	// same algorithm as decode except no object creation, length is final offset minus original.

@@ -31,11 +31,11 @@ class AddressFlyweightTests {
 	void testEncodeDecode() {
 		Id originRouteId = Id.random();
 		Tags metadata = Tags.builder().with("mycustommetadata", "mycustommetadatavalue")
-				.build();
+				.buildTags();
 		Tags tags = Tags.builder().with(WellKnownKey.MAJOR_VERSION, "1")
 				.with(WellKnownKey.MINOR_VERSION, "0")
 				.with("mycustomtag", "mycustomtagvalue")
-				.build();
+				.buildTags();
 		ByteBuf encoded = AddressFlyweight
 				.encode(ByteBufAllocator.DEFAULT, originRouteId, metadata, tags);
 		assertThat(AddressFlyweight.originRouteId(encoded)).isEqualTo(originRouteId);

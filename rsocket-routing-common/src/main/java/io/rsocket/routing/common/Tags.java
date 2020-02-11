@@ -19,9 +19,13 @@ package io.rsocket.routing.common;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Set;
 
 public class Tags {
+
+	private static final Tags EMPTY = builder().buildTags();
 
 	private final Map<Key, String> tags;
 
@@ -32,6 +36,14 @@ public class Tags {
 
 	public Map<Key, String> asMap() {
 		return this.tags;
+	}
+
+	public Set<Entry<Key, String>> entries() {
+		return this.tags.entrySet();
+	}
+
+	public boolean isEmpty() {
+		return this.tags.isEmpty();
 	}
 
 	@Override
@@ -56,14 +68,18 @@ public class Tags {
 		return new Builder();
 	}
 
-	public static class Builder {
+	public static Tags empty() {
+		return EMPTY;
+	}
+
+	public static class Builder<SELF extends Builder<SELF>> {
 
 		private final Map<Key, String> tags = new LinkedHashMap<>();
 
-		private Builder() {
+		protected Builder() {
 		}
 
-		public Builder with(String key, String value) {
+		public SELF with(String key, String value) {
 			Objects.requireNonNull(key, "key may not be null");
 			if (key.length() > 128) {
 				throw new IllegalArgumentException("key length can not be greater than 128, was " + key
@@ -72,27 +88,33 @@ public class Tags {
 			return with(Key.of(key), value);
 		}
 
-		public Builder with(WellKnownKey key, String value) {
+		public SELF with(WellKnownKey key, String value) {
 			Objects.requireNonNull(key, "key may not be null");
 			return with(Key.of(key), value);
 		}
 
-		public Builder with(Key key, String value) {
+		@SuppressWarnings("unchecked")
+		public SELF with(Key key, String value) {
 			Objects.requireNonNull(key, "key may not be null");
 			if (value != null && value.length() > 128) {
 				throw new IllegalArgumentException("value length can not be greater than 128, was " + value
 						.length());
 			}
 			this.tags.put(key, value);
-			return this;
+			return (SELF) this;
 		}
 
-		public Builder with(Tags tagsMetadata) {
+		@SuppressWarnings("unchecked")
+		public SELF with(Tags tagsMetadata) {
 			this.tags.putAll(tagsMetadata.asMap());
-			return this;
+			return (SELF) this;
 		}
 
-		public Tags build() {
+		protected Map<Key, String> getTags() {
+			return this.tags;
+		}
+
+		public Tags buildTags() {
 			return new Tags(Collections.unmodifiableMap(this.tags));
 		}
 

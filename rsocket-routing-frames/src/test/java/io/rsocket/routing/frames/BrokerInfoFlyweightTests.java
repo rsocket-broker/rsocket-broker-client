@@ -34,7 +34,7 @@ class BrokerInfoFlyweightTests {
 		Tags tags = Tags.builder().with(WellKnownKey.MAJOR_VERSION, "1")
 				.with(WellKnownKey.MINOR_VERSION, "0")
 				.with("mycustomtag", "mycustomtagvalue")
-				.build();
+				.buildTags();
 		ByteBuf encoded = BrokerInfoFlyweight
 				.encode(ByteBufAllocator.DEFAULT, brokerId, timestamp, tags);
 		assertThat(BrokerInfoFlyweight.brokerId(encoded)).isEqualTo(brokerId);
