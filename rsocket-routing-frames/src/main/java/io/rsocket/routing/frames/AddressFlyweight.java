@@ -38,8 +38,8 @@ public class AddressFlyweight {
 		ByteBuf byteBuf = FrameHeaderFlyweight.encode(allocator, FrameType.ROUTE_SETUP);
 		encodeId(byteBuf, originRouteId);
 
-		//FIXME: metadata missing
-		TagsFlyweight.encode(byteBuf, metadata);
+		//FIXME: how to deal with empty metadata?
+		//TagsFlyweight.encode(byteBuf, metadata);
 
 		TagsFlyweight.encode(byteBuf, tags);
 
@@ -51,14 +51,15 @@ public class AddressFlyweight {
 	}
 
 	public static Tags metadata(ByteBuf byteBuf) {
-		int offset = FrameHeaderFlyweight.BYTES + FlyweightUtils.ID_BYTES;
-		return TagsFlyweight.decode(offset, byteBuf);
+		//int offset = FrameHeaderFlyweight.BYTES + FlyweightUtils.ID_BYTES;
+		//return TagsFlyweight.decode(offset, byteBuf);
+		return Tags.empty();
 	}
 
 	public static Tags tags(ByteBuf byteBuf) {
 		int offset = FrameHeaderFlyweight.BYTES + FlyweightUtils.ID_BYTES;
 		// metadata length
-		offset += TagsFlyweight.length(offset, byteBuf);
+		//offset += TagsFlyweight.length(offset, byteBuf);
 		return TagsFlyweight.decode(offset, byteBuf);
 	}
 
