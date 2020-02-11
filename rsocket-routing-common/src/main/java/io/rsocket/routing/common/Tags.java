@@ -105,8 +105,8 @@ public class Tags {
 		}
 
 		@SuppressWarnings("unchecked")
-		public SELF with(Tags tagsMetadata) {
-			this.tags.putAll(tagsMetadata.asMap());
+		public SELF with(Tags tags) {
+			this.tags.putAll(tags.asMap());
 			return (SELF) this;
 		}
 
