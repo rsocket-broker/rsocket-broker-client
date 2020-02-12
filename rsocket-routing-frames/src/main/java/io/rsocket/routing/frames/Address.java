@@ -36,12 +36,12 @@ public class Address {
 	/**
 	 * Address metadata key.
 	 */
-	public static final String METADATA_KEY = "address";
+	public static final String METADATA_KEY = Address.class.getSimpleName().toLowerCase();
 
 	/**
 	 * Address subtype.
 	 */
-	public static final String ADDRESS = "x.rsocket.address.v0";
+	public static final String ADDRESS = "x.rsocket.routing." + METADATA_KEY + ".v0";
 
 	private final Id originRouteId;
 	private final Tags metadata;

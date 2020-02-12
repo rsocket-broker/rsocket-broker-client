@@ -28,19 +28,19 @@ import static io.rsocket.routing.frames.RouteSetupFlyweight.serviceName;
 import static io.rsocket.routing.frames.RouteSetupFlyweight.tags;
 
 /**
- * Useful to hold decoded RouteSetup information.
+ * Representation of decoded RouteSetup information.
  */
 public final class RouteSetup {
 
 	/**
 	 * Forwarding metadata key.
 	 */
-	public static final String METADATA_KEY = "routesetup";
+	public static final String METADATA_KEY = RouteSetup.class.getSimpleName().toLowerCase();
 
 	/**
 	 * Route Setup subtype.
 	 */
-	public static final String ROUTE_SETUP = "x.rsocket.routing.routesetup.v0";
+	public static final String ROUTE_SETUP = "x.rsocket.routing." + METADATA_KEY + ".v0";
 
 	private final Id routeId;
 
