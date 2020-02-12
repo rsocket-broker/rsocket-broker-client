@@ -33,6 +33,7 @@ class RouteRemoveFlyweightTests {
 
 		ByteBuf encoded = RouteRemoveFlyweight
 				.encode(ByteBufAllocator.DEFAULT, brokerId, routeId, timestamp);
+		assertThat(FrameHeaderFlyweight.frameType(encoded)).isEqualTo(FrameType.ROUTE_REMOVE);
 		assertThat(RouteRemoveFlyweight.brokerId(encoded)).isEqualTo(brokerId);
 		assertThat(RouteRemoveFlyweight.routeId(encoded)).isEqualTo(routeId);
 		assertThat(RouteRemoveFlyweight.timestamp(encoded)).isEqualTo(timestamp);

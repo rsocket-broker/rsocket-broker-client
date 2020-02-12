@@ -26,16 +26,7 @@ import io.rsocket.routing.common.Tags;
 /**
  * Representation of decoded RouteJoin information.
  */
-public final class RouteJoin {
-	/**
-	 * RouteJoin metadata key.
-	 */
-	public static final String METADATA_KEY = RouteJoin.class.getSimpleName().toLowerCase();
-
-	/**
-	 * RouteRemove subtype.
-	 */
-	public static final String ROUTE_JOIN = "x.rsocket.routing." + METADATA_KEY + ".v0";
+public final class RouteJoin extends RoutingFrame {
 
 	private final Id brokerId;
 
@@ -49,6 +40,7 @@ public final class RouteJoin {
 
 	public RouteJoin(Id brokerId, Id routeId, long timestamp,
 			String serviceName, Tags tags) {
+		super(FrameType.ROUTE_JOIN);
 		this.brokerId = brokerId;
 		this.routeId = routeId;
 		this.timestamp = timestamp;

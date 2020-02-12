@@ -25,16 +25,7 @@ import io.rsocket.routing.common.Id;
 /**
  * Representation of decoded RouteSetup information.
  */
-public final class RouteRemove {
-	/**
-	 * RouteRemove metadata key.
-	 */
-	public static final String METADATA_KEY = RouteRemove.class.getSimpleName().toLowerCase();
-
-	/**
-	 * RouteRemove subtype.
-	 */
-	public static final String ROUTE_REMOVE = "x.rsocket.routing." + METADATA_KEY + ".v0";
+public final class RouteRemove extends RoutingFrame {
 
 	private final Id brokerId;
 
@@ -43,6 +34,7 @@ public final class RouteRemove {
 	private final long timestamp;
 
 	public RouteRemove(Id brokerId, Id routeId, long timestamp) {
+		super(FrameType.ROUTE_REMOVE);
 		this.brokerId = brokerId;
 		this.routeId = routeId;
 		this.timestamp = timestamp;

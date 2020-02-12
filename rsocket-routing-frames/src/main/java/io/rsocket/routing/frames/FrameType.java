@@ -35,7 +35,7 @@ public enum FrameType {
 	 * information may not arrive from the broker where the routable destination
 	 * connected, so the information could be forwarded when it connects.
 	 */
-	ROUTE_ADD(0x02),
+	ROUTE_JOIN(0x02),
 
 	/**
 	 * Information passed between brokers to indicate a routable destination is no

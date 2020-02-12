@@ -32,22 +32,14 @@ import static io.rsocket.routing.frames.AddressFlyweight.tags;
 /**
  * Useful to hold decoded Address information.
  */
-public class Address {
-	/**
-	 * Address metadata key.
-	 */
-	public static final String METADATA_KEY = Address.class.getSimpleName().toLowerCase();
-
-	/**
-	 * Address subtype.
-	 */
-	public static final String ADDRESS = "x.rsocket.routing." + METADATA_KEY + ".v0";
+public class Address extends RoutingFrame {
 
 	private final Id originRouteId;
 	private final Tags metadata;
 	private final Tags tags;
 
 	private Address(Id originRouteId, Tags metadata, Tags tags) {
+		super(FrameType.ADDRESS);
 		this.originRouteId = originRouteId;
 		this.metadata = metadata;
 		this.tags = tags;

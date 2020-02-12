@@ -35,7 +35,7 @@ public class BrokerInfoFlyweight {
 		Objects.requireNonNull(brokerId, "brokerId may not be null");
 		Objects.requireNonNull(tags, "tags may not be null");
 
-		ByteBuf byteBuf = FrameHeaderFlyweight.encode(allocator, FrameType.ROUTE_SETUP);
+		ByteBuf byteBuf = FrameHeaderFlyweight.encode(allocator, FrameType.BROKER_INFO);
 		encodeId(byteBuf, brokerId);
 
 		byteBuf.writeLong(timestamp);

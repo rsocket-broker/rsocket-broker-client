@@ -34,7 +34,7 @@ public class RouteRemoveFlyweight {
 		Objects.requireNonNull(brokerId, "brokerId may not be null");
 		Objects.requireNonNull(routeId, "routeId may not be null");
 
-		ByteBuf byteBuf = FrameHeaderFlyweight.encode(allocator, FrameType.ROUTE_SETUP);
+		ByteBuf byteBuf = FrameHeaderFlyweight.encode(allocator, FrameType.ROUTE_REMOVE);
 		encodeId(byteBuf, brokerId);
 		encodeId(byteBuf, routeId);
 		byteBuf.writeLong(timestamp);

@@ -53,6 +53,7 @@ class RouteSetupFlyweightTests {
 				.buildTags();
 		ByteBuf encoded = RouteSetupFlyweight
 				.encode(ByteBufAllocator.DEFAULT, routeId, serviceName, tags);
+		assertThat(FrameHeaderFlyweight.frameType(encoded)).isEqualTo(FrameType.ROUTE_SETUP);
 		assertThat(RouteSetupFlyweight.routeId(encoded)).isEqualTo(routeId);
 		assertThat(RouteSetupFlyweight.serviceName(encoded)).isEqualTo(serviceName);
 		assertThat(RouteSetupFlyweight.tags(encoded)).isEqualTo(tags);

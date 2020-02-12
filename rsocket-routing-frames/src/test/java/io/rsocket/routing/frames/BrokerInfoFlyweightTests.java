@@ -37,6 +37,7 @@ class BrokerInfoFlyweightTests {
 				.buildTags();
 		ByteBuf encoded = BrokerInfoFlyweight
 				.encode(ByteBufAllocator.DEFAULT, brokerId, timestamp, tags);
+		assertThat(FrameHeaderFlyweight.frameType(encoded)).isEqualTo(FrameType.BROKER_INFO);
 		assertThat(BrokerInfoFlyweight.brokerId(encoded)).isEqualTo(brokerId);
 		assertThat(BrokerInfoFlyweight.timestamp(encoded)).isEqualTo(timestamp);
 		assertThat(BrokerInfoFlyweight.tags(encoded)).isEqualTo(tags);

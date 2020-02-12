@@ -52,6 +52,7 @@ class AddressFlyweightTests {
 		Id originRouteId = Id.random();
 		ByteBuf encoded = AddressFlyweight
 				.encode(ByteBufAllocator.DEFAULT, originRouteId, metadata, tags);
+		assertThat(FrameHeaderFlyweight.frameType(encoded)).isEqualTo(FrameType.ADDRESS);
 		assertThat(AddressFlyweight.originRouteId(encoded)).isEqualTo(originRouteId);
 		// FIXME: assertThat(AddressFlyweight.metadata(encoded)).isEqualTo(metadata);
 		assertThat(AddressFlyweight.metadata(encoded)).isEqualTo(Tags.empty());

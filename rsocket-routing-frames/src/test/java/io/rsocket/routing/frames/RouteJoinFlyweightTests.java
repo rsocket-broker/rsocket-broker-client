@@ -39,6 +39,7 @@ class RouteJoinFlyweightTests {
 				.buildTags();
 		ByteBuf encoded = RouteJoinFlyweight
 				.encode(ByteBufAllocator.DEFAULT, brokerId, routeId, timestamp, serviceName, tags);
+		assertThat(FrameHeaderFlyweight.frameType(encoded)).isEqualTo(FrameType.ROUTE_JOIN);
 		assertThat(RouteJoinFlyweight.brokerId(encoded)).isEqualTo(brokerId);
 		assertThat(RouteJoinFlyweight.routeId(encoded)).isEqualTo(routeId);
 		assertThat(RouteJoinFlyweight.timestamp(encoded)).isEqualTo(timestamp);

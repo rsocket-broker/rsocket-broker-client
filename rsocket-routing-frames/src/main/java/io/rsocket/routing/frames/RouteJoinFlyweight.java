@@ -39,7 +39,7 @@ public class RouteJoinFlyweight {
 		Objects.requireNonNull(serviceName, "serviceName may not be null");
 		Objects.requireNonNull(tags, "tags may not be null");
 
-		ByteBuf byteBuf = FrameHeaderFlyweight.encode(allocator, FrameType.ROUTE_SETUP);
+		ByteBuf byteBuf = FrameHeaderFlyweight.encode(allocator, FrameType.ROUTE_JOIN);
 		encodeId(byteBuf, brokerId);
 		encodeId(byteBuf, routeId);
 		byteBuf.writeLong(timestamp);

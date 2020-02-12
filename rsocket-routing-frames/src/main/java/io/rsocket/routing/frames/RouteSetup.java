@@ -30,17 +30,7 @@ import static io.rsocket.routing.frames.RouteSetupFlyweight.tags;
 /**
  * Representation of decoded RouteSetup information.
  */
-public final class RouteSetup {
-
-	/**
-	 * Forwarding metadata key.
-	 */
-	public static final String METADATA_KEY = RouteSetup.class.getSimpleName().toLowerCase();
-
-	/**
-	 * Route Setup subtype.
-	 */
-	public static final String ROUTE_SETUP = "x.rsocket.routing." + METADATA_KEY + ".v0";
+public final class RouteSetup extends RoutingFrame {
 
 	private final Id routeId;
 
@@ -48,6 +38,7 @@ public final class RouteSetup {
 	private final Tags tags;
 
 	private RouteSetup(Id routeId, String serviceName, Tags tags) {
+		super(FrameType.ROUTE_SETUP);
 		this.routeId = routeId;
 		this.serviceName = serviceName;
 		this.tags = tags;

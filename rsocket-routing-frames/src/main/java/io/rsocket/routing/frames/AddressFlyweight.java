@@ -35,7 +35,7 @@ public class AddressFlyweight {
 		Objects.requireNonNull(originRouteId, "originRouteId may not be null");
 		Objects.requireNonNull(tags, "tags may not be null");
 
-		ByteBuf byteBuf = FrameHeaderFlyweight.encode(allocator, FrameType.ROUTE_SETUP);
+		ByteBuf byteBuf = FrameHeaderFlyweight.encode(allocator, FrameType.ADDRESS);
 		encodeId(byteBuf, originRouteId);
 
 		//FIXME: how to deal with empty metadata?

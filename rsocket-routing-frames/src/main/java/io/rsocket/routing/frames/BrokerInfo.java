@@ -26,16 +26,7 @@ import io.rsocket.routing.common.Tags;
 /**
  * Representation of decoded BrokerInfo information.
  */
-public final class BrokerInfo {
-	/**
-	 * BrokerInfo metadata key.
-	 */
-	public static final String METADATA_KEY = BrokerInfo.class.getSimpleName().toLowerCase();
-
-	/**
-	 * BrokerInfo subtype.
-	 */
-	public static final String BROKER_INFO = "x.rsocket.routing." + METADATA_KEY + ".v0";
+public final class BrokerInfo extends RoutingFrame {
 
 	private final Id brokerId;
 
@@ -44,6 +35,7 @@ public final class BrokerInfo {
 	private final Tags tags;
 
 	private BrokerInfo(Id brokerId, long timestamp, Tags tags) {
+		super(FrameType.BROKER_INFO);
 		this.brokerId = brokerId;
 		this.timestamp = timestamp;
 		this.tags = tags;
