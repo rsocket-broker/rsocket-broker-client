@@ -18,22 +18,22 @@ package io.rsocket.routing.client;
 
 import java.io.IOException;
 
-import io.rsocket.routing.config.RoutingClientConfiguration;
+import io.rsocket.routing.config.RoutingClientProperties;
 import io.rsocket.routing.config.TypesafeConfigFactory;
 
 public class DefaultRoutingClient implements RoutingClient {
 
-	private final RoutingClientConfiguration config;
+	private final RoutingClientProperties config;
 
 	public DefaultRoutingClient() {
 		this(TypesafeConfigFactory.load());
 	}
 
-	protected DefaultRoutingClient(RoutingClientConfiguration config) {
+	protected DefaultRoutingClient(RoutingClientProperties config) {
 		this.config = config;
 	}
 
-	/* for testing */ RoutingClientConfiguration getConfig() {
+	/* for testing */ RoutingClientProperties getConfig() {
 		return this.config;
 	}
 

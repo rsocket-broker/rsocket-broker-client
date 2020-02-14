@@ -22,13 +22,13 @@ import com.typesafe.config.ConfigFactory;
 
 public class TypesafeConfigFactory {
 
-	public static RoutingClientConfiguration load() {
+	public static RoutingClientProperties load() {
 		return load(ConfigFactory.load());
 	}
 
-	public static RoutingClientConfiguration load(Config config) {
-		RoutingClientConfiguration configuration = ConfigBeanFactory.create(config
-				.getConfig(RoutingClientConfiguration.CONFIG_PREFIX), RoutingClientConfiguration.class);
+	public static RoutingClientProperties load(Config config) {
+		RoutingClientProperties configuration = ConfigBeanFactory.create(config
+				.getConfig(RoutingClientProperties.CONFIG_PREFIX), RoutingClientProperties.class);
 		return configuration;
 	}
 }

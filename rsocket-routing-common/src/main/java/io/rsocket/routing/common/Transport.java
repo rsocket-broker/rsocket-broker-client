@@ -14,32 +14,20 @@
  * limitations under the License.
  */
 
-package io.rsocket.routing.config;
+package io.rsocket.routing.common;
 
-import java.util.StringJoiner;
+/**
+ * Choice of transport protocol for the RSocket server.
+ */
+public enum  Transport {
+	/**
+	 * TCP transport protocol.
+	 */
+	TCP,
 
-public class RoutingClientConfiguration {
+	/**
+	 * WebSocket transport protocol.
+	 */
+	WEBSOCKET
 
-	public static final String CONFIG_PREFIX = "io.rsocket.routing.client";
-
-	private int port = 8001;
-
-	public RoutingClientConfiguration() {
-	}
-
-	public int getPort() {
-		return this.port;
-	}
-
-	public void setPort(int port) {
-		this.port = port;
-	}
-
-	@Override
-	public String toString() {
-		return new StringJoiner(", ", RoutingClientConfiguration.class
-				.getSimpleName() + "[", "]")
-				.add("port=" + port)
-				.toString();
-	}
 }

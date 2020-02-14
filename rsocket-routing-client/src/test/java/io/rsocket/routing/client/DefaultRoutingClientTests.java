@@ -16,7 +16,9 @@
 
 package io.rsocket.routing.client;
 
+import io.rsocket.routing.common.Id;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,8 +32,10 @@ public class DefaultRoutingClientTests {
 		client = new DefaultRoutingClient();
 	}
 
+	@Disabled
 	@Test
 	public void clientWorks() {
-		assertThat(client.getConfig().getPort()).isEqualTo(8001);
+		assertThat(client.getConfig().getRouteId())
+				.isEqualTo(Id.from("00000000-0000-0000-0000-000000000001"));
 	}
 }

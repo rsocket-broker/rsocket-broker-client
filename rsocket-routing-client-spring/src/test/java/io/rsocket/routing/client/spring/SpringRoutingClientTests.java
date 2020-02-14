@@ -16,6 +16,7 @@
 
 package io.rsocket.routing.client.spring;
 
+import io.rsocket.routing.common.Id;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
+@SpringBootTest(properties = {"io.rsocket.routing.client.auto-connect=false"})
 public class SpringRoutingClientTests {
 
 	@Autowired
@@ -33,7 +34,7 @@ public class SpringRoutingClientTests {
 
 	@Test
 	public void clientWorks() {
-		assertThat(client.getConfig().getPort()).isEqualTo(5555);
+		assertThat(client.getProperties().getRouteId()).isEqualTo(Id.from("00000000-0000-0000-0000-000000000011"));
 	}
 
 	@SpringBootConfiguration
