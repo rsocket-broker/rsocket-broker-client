@@ -53,6 +53,11 @@ public final class BrokerInfo extends RoutingFrame {
 		return this.tags;
 	}
 
+	/**
+	 * Equals does not take into account timestamp.
+	 * @param o other BrokerInfo
+	 * @return true if equal.
+	 */
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
@@ -62,14 +67,17 @@ public final class BrokerInfo extends RoutingFrame {
 			return false;
 		}
 		BrokerInfo that = (BrokerInfo) o;
-		return this.timestamp == that.timestamp
-				&& Objects.equals(this.brokerId, that.brokerId)
+		return Objects.equals(this.brokerId, that.brokerId)
 				&& Objects.equals(this.tags, that.tags);
 	}
 
+	/**
+	 * Hashcode does not use timestamp.
+	 * @return hashcode.
+	 */
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.brokerId, this.timestamp, this.tags);
+		return Objects.hash(this.brokerId, this.tags);
 	}
 
 	@Override
