@@ -16,113 +16,33 @@
 
 package io.rsocket.routing.config;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringJoiner;
 
 import io.rsocket.routing.common.Id;
 import io.rsocket.routing.common.MutableKey;
 import io.rsocket.routing.common.Transport;
 
-public class RoutingClientProperties {
+public interface RoutingClientProperties {
 
-	public static final String CONFIG_PREFIX = "io.rsocket.routing.client";
+	String CONFIG_PREFIX = "io.rsocket.routing.client";
 
-	private Id routeId = Id.random();
+	Id getRouteId();
 
-	private String serviceName;
+	String getServiceName();
 
-	private Map<MutableKey, String> tags = new LinkedHashMap<>();
+	Map<MutableKey, String> getTags();
 
-	private List<Broker> brokers = new ArrayList<>();
+	List<? extends Broker> getBrokers();
 
-	public RoutingClientProperties() {
-	}
+	interface Broker {
 
-	public Id getRouteId() {
-		return this.routeId;
-	}
+		String getHost();
 
-	public void setRouteId(Id routeId) {
-		this.routeId = routeId;
-	}
+		int getPort();
 
-	public String getServiceName() {
-		return this.serviceName;
-	}
+		Transport getTransport();
 
-	public void setServiceName(String serviceName) {
-		this.serviceName = serviceName;
-	}
-
-	public Map<MutableKey, String> getTags() {
-		return this.tags;
-	}
-
-	public void setTags(Map<MutableKey, String> tags) {
-		this.tags = tags;
-	}
-
-	public List<Broker> getBrokers() {
-		return this.brokers;
-	}
-
-	public void setBrokers(List<Broker> brokers) {
-		this.brokers = brokers;
-	}
-
-	@Override
-	public String toString() {
-		return new StringJoiner(", ", RoutingClientProperties.class
-				.getSimpleName() + "[", "]")
-				.add("routeId=" + routeId)
-				.add("serviceName='" + serviceName + "'")
-				.add("tags=" + tags)
-				.add("brokers=" + brokers)
-				.toString();
-	}
-
-	public static class Broker {
-		private String host;
-
-		private int port;
-
-		private Transport transport = Transport.TCP;
-
-		public String getHost() {
-			return this.host;
-		}
-
-		public void setHost(String host) {
-			this.host = host;
-		}
-
-		public int getPort() {
-			return this.port;
-		}
-
-		public void setPort(int port) {
-			this.port = port;
-		}
-
-		public Transport getTransport() {
-			return this.transport;
-		}
-
-		public void setTransport(Transport transport) {
-			this.transport = transport;
-		}
-
-		@Override
-		public String toString() {
-			return new StringJoiner(", ", getClass().getSimpleName() + "[", "]")
-					.add("host='" + host + "'")
-					.add("port=" + port)
-					.add("port=" + transport)
-					.toString();
-		}
 	}
 
 }

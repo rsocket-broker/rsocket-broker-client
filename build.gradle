@@ -22,7 +22,7 @@ subprojects {
 		}
 
 		dependencies {
-			dependency "com.typesafe:config:${typesafeConfigVersion}"
+			dependency "com.netflix.archaius:archaius2-core:${archaius2Version}"
 			dependency "io.rsocket:rsocket-core:${rsocketVersion}"
 			dependency "io.rsocket:rsocket-load-balancer:${rsocketVersion}"
 			dependency "io.rsocket:rsocket-micrometer:${rsocketVersion}"

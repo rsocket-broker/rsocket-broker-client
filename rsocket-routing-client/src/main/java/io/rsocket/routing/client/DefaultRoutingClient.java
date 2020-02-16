@@ -18,15 +18,15 @@ package io.rsocket.routing.client;
 
 import java.io.IOException;
 
+import io.rsocket.routing.config.ArchaiusConfigFactory;
 import io.rsocket.routing.config.RoutingClientProperties;
-import io.rsocket.routing.config.TypesafeConfigFactory;
 
 public class DefaultRoutingClient implements RoutingClient {
 
 	private final RoutingClientProperties config;
 
 	public DefaultRoutingClient() {
-		this(TypesafeConfigFactory.load());
+		this(ArchaiusConfigFactory.load());
 	}
 
 	protected DefaultRoutingClient(RoutingClientProperties config) {

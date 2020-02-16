@@ -16,28 +16,27 @@
 
 package io.rsocket.routing.config;
 
-import com.typesafe.config.ConfigFactory;
 import io.rsocket.routing.common.Id;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TypesafeConfigFactoryTests {
+public class ArchaiusConfigFactoryTests {
 
-	private RoutingClientProperties config;
+	private RoutingClientProperties properties;
 
 	@BeforeEach
 	public void setup() {
-		config = TypesafeConfigFactory.load(ConfigFactory.load("typesafetest1"));
+		/*System.setProperty(RoutingClientProperties.CONFIG_PREFIX + ".serviceName",
+				"servicefromproperties");*/
+		properties = ArchaiusConfigFactory.load("archaiustest1");
 	}
 
 	@Test
-	@Disabled
-	// TODO: typesafe doesn't work for arbitrary objects, maybe transition to
 	// https://github.com/Netflix/archaius/blob/2.x/archaius2-core/src/test/java/com/netflix/archaius/mapper/ProxyFactoryTest.java
 	public void configWorks() {
-		assertThat(config.getRouteId()).isEqualTo(Id.from("00000000-0000-0000-0000-000000000001"));
+		assertThat(properties.getServiceName()).isEqualTo("testservice");
+		assertThat(properties.getRouteId()).isEqualTo(Id.from("00000000-0000-0000-0000-000000000022"));
 	}
 }

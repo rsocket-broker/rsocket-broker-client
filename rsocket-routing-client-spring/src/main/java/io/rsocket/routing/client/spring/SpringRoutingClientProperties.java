@@ -16,21 +16,70 @@
 
 package io.rsocket.routing.client.spring;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
+import io.rsocket.routing.common.Id;
 import io.rsocket.routing.common.MutableKey;
+import io.rsocket.routing.common.Transport;
 import io.rsocket.routing.config.RoutingClientProperties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.core.style.ToStringCreator;
 
 import static io.rsocket.routing.config.RoutingClientProperties.CONFIG_PREFIX;
 
 @ConfigurationProperties(CONFIG_PREFIX + ".address")
-public class SpringRoutingClientProperties extends RoutingClientProperties {
+public class SpringRoutingClientProperties implements RoutingClientProperties {
+
+	private Id routeId = Id.random();
+
+	private String serviceName;
+
+	private Map<MutableKey, String> tags = new LinkedHashMap<>();
+
+	@NestedConfigurationProperty
+	private List<BrokerImpl> brokers = new ArrayList<>();
 
 	private Map<String, Map<MutableKey, String>> address = new LinkedHashMap<>();
+
+	public SpringRoutingClientProperties() {
+	}
+
+	public Id getRouteId() {
+		return this.routeId;
+	}
+
+	public void setRouteId(Id routeId) {
+		this.routeId = routeId;
+	}
+
+	public String getServiceName() {
+		return this.serviceName;
+	}
+
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
+	}
+
+	public Map<MutableKey, String> getTags() {
+		return this.tags;
+	}
+
+	public void setTags(Map<MutableKey, String> tags) {
+		this.tags = tags;
+	}
+
+	public List<? extends Broker> getBrokers() {
+		return this.brokers;
+	}
+
+	public void setBrokers(List<BrokerImpl> brokers) {
+		this.brokers = brokers;
+	}
 
 	public Map<String, Map<MutableKey, String>> getAddress() {
 		return address;
@@ -49,4 +98,46 @@ public class SpringRoutingClientProperties extends RoutingClientProperties {
 		// @formatter:on
 	}
 
+	public static class BrokerImpl implements RoutingClientProperties.Broker {
+		private String host;
+
+		private int port;
+
+		private Transport transport = Transport.TCP;
+
+		public String getHost() {
+			return this.host;
+		}
+
+		public void setHost(String host) {
+			this.host = host;
+		}
+
+		public int getPort() {
+			return this.port;
+		}
+
+		public void setPort(int port) {
+			this.port = port;
+		}
+
+		public Transport getTransport() {
+			return this.transport;
+		}
+
+		public void setTransport(Transport transport) {
+			this.transport = transport;
+		}
+
+		@Override
+		public String toString() {
+			// @formatter:off
+			return new ToStringCreator(this)
+					.append("host", host)
+					.append("port", port)
+					.append("transport", transport)
+					.toString();
+			// @formatter:on
+		}
+	}
 }
