@@ -25,19 +25,24 @@ import io.rsocket.routing.common.WellKnownKey;
 import io.rsocket.routing.config.RoutingClientProperties;
 import io.rsocket.routing.config.RoutingClientProperties.Broker;
 import io.rsocket.routing.frames.Address;
+import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
+import reactor.core.publisher.MonoProcessor;
 
 import org.springframework.messaging.rsocket.RSocketRequester;
 
-public class SpringRoutingClient implements RoutingClient {
+public class SpringRoutingClient implements RoutingClient, Disposable {
 
 	private final RoutingClientProperties properties;
 
 	private final RSocketRequester.Builder builder;
 
+	private final MonoProcessor<Void> onClose;
+
 	public SpringRoutingClient(RoutingClientProperties properties, RSocketRequester.Builder builder) {
 		this.properties = properties;
 		this.builder = builder;
+		this.onClose = MonoProcessor.create();
 	}
 
 	/* for testing */ RoutingClientProperties getProperties() {
@@ -78,6 +83,20 @@ public class SpringRoutingClient implements RoutingClient {
 			builderConsumer.accept(builder);
 			spec.metadata(builder.build(), MimeTypes.ROUTING_FRAME_MIME_TYPE);
 		};
+	}
+
+	public Mono<Void> onClose() {
+		return onClose;
+	}
+
+	@Override
+	public boolean isDisposed() {
+		return onClose.isTerminated();
+	}
+
+	@Override
+	public void dispose() {
+		onClose.onComplete();
 	}
 
 	@Override

@@ -18,6 +18,8 @@ package io.rsocket.routing.client.spring;
 
 import java.util.function.Consumer;
 
+import reactor.core.publisher.Mono;
+
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationListener;
@@ -47,12 +49,28 @@ public class BrokerClientConnectionListener
 	public void onApplicationEvent(ApplicationReadyEvent event) {
 		// TODO: is there a better event the just RSocketRequester?
 		// TODO: save Disposable?
-		this.routingClient.connect().subscribe(publishEvent());
+		startAwaitThread();
+		Mono<RSocketRequester> requesterMono = this.routingClient.connect();
+		requesterMono.subscribe(publishEvent());
+	}
+
+	private void startAwaitThread() {
+		Thread awaitThread = new Thread("routing-client-thread") {
+			@Override
+			public void run() {
+				routingClient.onClose().block();
+			}
+		};
+		awaitThread.setContextClassLoader(getClass().getClassLoader());
+		awaitThread.setDaemon(false);
+		awaitThread.start();
 	}
 
 	private Consumer<RSocketRequester> publishEvent() {
-		return requester -> publisher.publishEvent(new RSocketRequesterEvent<>(
-				BrokerClientConnectionListener.this, requester));
+		return requester -> {
+			publisher.publishEvent(new RSocketRequesterEvent<>(
+					BrokerClientConnectionListener.this, requester));
+		};
 	}
 
 	@Override
