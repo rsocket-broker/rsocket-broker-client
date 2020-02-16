@@ -62,6 +62,11 @@ public class Id {
 		return new Id(parts[0], parts[1]);
 	}
 
+	// userful convention for serialization
+	public static Id valueOf(String uuid) {
+		return from(uuid);
+	}
+
 	public static Id from(String uuid) {
 		return from(UUID.fromString(uuid));
 	}
