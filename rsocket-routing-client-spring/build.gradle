@@ -1,7 +1,7 @@
 description = 'RSocket Routing Client Spring'
 
 dependencies {
-	implementation(project(':rsocket-routing-client')) {
+	compile(project(':rsocket-routing-client')) {
 		exclude group: 'com.typesafe', module: 'config'
 	}
 	implementation project(':rsocket-routing-common')

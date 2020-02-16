@@ -1,8 +1,8 @@
 description = 'RSocket Routing Client'
 
 dependencies {
-	implementation project(':rsocket-routing-common')
-	implementation 'com.typesafe:config'
+	compile project(':rsocket-routing-common')
+	compile 'com.typesafe:config'
 
 	implementation 'io.projectreactor.netty:reactor-netty'
 
