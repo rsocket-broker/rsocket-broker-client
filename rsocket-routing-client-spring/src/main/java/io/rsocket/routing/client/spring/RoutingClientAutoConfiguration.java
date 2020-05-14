@@ -55,7 +55,7 @@ public class RoutingClientAutoConfiguration {
 	@Bean
 	@Scope("prototype") // TODO: I don't think prototype works here
 	@ConditionalOnMissingBean
-	public RSocketRequester.Builder gatewayRSocketRequesterBuilder(
+	public RSocketRequester.Builder routingClientRSocketRequesterBuilder(
 			RSocketMessageHandler messageHandler, RSocketStrategies strategies,
 			SpringRoutingClientProperties properties) {
 		RouteSetup.Builder routeSetup = RouteSetup.from(properties.getRouteId(),

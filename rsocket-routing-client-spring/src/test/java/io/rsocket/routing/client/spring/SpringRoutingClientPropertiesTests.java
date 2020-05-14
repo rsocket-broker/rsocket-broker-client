@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.entry;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT,
-		properties = "spring.cloud.gateway.rsocket.client.auto-connect=false")
+		properties = "io.rsocket.routing.client.auto-connect=false")
 public class SpringRoutingClientPropertiesTests {
 
 	@Autowired
