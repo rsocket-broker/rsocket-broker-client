@@ -25,6 +25,7 @@ import io.rsocket.transport.netty.client.WebsocketClientTransport;
 import reactor.core.publisher.Mono;
 
 import org.springframework.messaging.rsocket.ClientRSocketFactoryConfigurer;
+import org.springframework.messaging.rsocket.RSocketConnectorConfigurer;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.messaging.rsocket.RSocketStrategies;
 import org.springframework.util.MimeType;
@@ -43,6 +44,11 @@ final class ClientRSocketRequesterBuilder implements RSocketRequester.Builder {
 		this.delegate = delegate;
 		this.properties = properties;
 		this.routeMatcher = routeMatcher;
+	}
+
+	@Override
+	public RSocketRequester.Builder rsocketConnector(RSocketConnectorConfigurer configurer) {
+		return delegate.rsocketConnector(configurer);
 	}
 
 	@Override
