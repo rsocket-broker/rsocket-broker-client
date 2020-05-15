@@ -32,7 +32,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
-import org.springframework.messaging.rsocket.ClientRSocketFactoryConfigurer;
+import org.springframework.messaging.rsocket.RSocketConnectorConfigurer;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.messaging.rsocket.RSocketStrategies;
 import org.springframework.messaging.rsocket.annotation.support.RSocketMessageHandler;
@@ -74,7 +74,7 @@ public class RoutingClientAutoConfiguration {
 
 		RSocketRequester.Builder builder = RSocketRequester.builder()
 				.setupMetadata(routeSetup.build(), MimeTypes.ROUTING_FRAME_MIME_TYPE)
-				.rsocketStrategies(strategies).rsocketFactory(configurer(messageHandler));
+				.rsocketStrategies(strategies).rsocketConnector(configurer(messageHandler));
 
 		return new ClientRSocketRequesterBuilder(builder, properties,
 				strategies.routeMatcher());
@@ -82,7 +82,7 @@ public class RoutingClientAutoConfiguration {
 	}
 
 
-	private ClientRSocketFactoryConfigurer configurer(RSocketMessageHandler messageHandler) {
+	private RSocketConnectorConfigurer configurer(RSocketMessageHandler messageHandler) {
 		return rsocketFactory -> rsocketFactory //.addRequesterPlugin(interceptor)
 				.acceptor(messageHandler.responder());
 	}

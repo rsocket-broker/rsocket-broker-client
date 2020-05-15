@@ -87,6 +87,7 @@ final class ClientRSocketRequesterBuilder implements RSocketRequester.Builder {
 		return delegate.rsocketStrategies(configurer);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public RSocketRequester.Builder rsocketFactory(
 			ClientRSocketFactoryConfigurer configurer) {
