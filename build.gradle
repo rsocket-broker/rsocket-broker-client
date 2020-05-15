@@ -20,16 +20,11 @@ subprojects {
 			mavenBom "io.projectreactor:reactor-bom:${reactorBomVersion}"
 			mavenBom "org.junit:junit-bom:${junitJupiterVersion}"
 			mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
+			mavenBom "io.rsocket:rsocket-bom:${rsocketVersion}"
 		}
 
 		dependencies {
 			dependency "com.netflix.archaius:archaius2-core:${archaius2Version}"
-			dependency "io.rsocket:rsocket-core:${rsocketVersion}"
-			dependency "io.rsocket:rsocket-load-balancer:${rsocketVersion}"
-			dependency "io.rsocket:rsocket-micrometer:${rsocketVersion}"
-			dependency "io.rsocket:rsocket-test:${rsocketVersion}"
-			dependency "io.rsocket:rsocket-transport-local:${rsocketVersion}"
-			dependency "io.rsocket:rsocket-transport-netty:${rsocketVersion}"
 			dependency "org.assertj:assertj-core:${assertjVersion}"
 		}
 	}
