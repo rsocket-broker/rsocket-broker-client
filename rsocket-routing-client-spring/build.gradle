@@ -1,7 +1,7 @@
 description = 'RSocket Routing Client Spring'
 
 dependencies {
-	compile(project(':rsocket-routing-client')) {
+	api(project(':rsocket-routing-client')) {
 		exclude group: 'com.netflix.archaius', module: 'archaius2-core'
 	}
 	implementation project(':rsocket-routing-common')

@@ -1,8 +1,8 @@
 description = 'RSocket Routing Client'
 
 dependencies {
-	compile project(':rsocket-routing-common')
-	compile "com.netflix.archaius:archaius2-core"
+	api project(':rsocket-routing-common')
+	implementation "com.netflix.archaius:archaius2-core"
 
 	implementation 'io.projectreactor.netty:reactor-netty'
 
