@@ -16,9 +16,14 @@
 
 package io.rsocket.routing.client.spring;
 
+import java.net.URI;
+
 import io.rsocket.RSocket;
 import io.rsocket.routing.config.RoutingClientProperties;
 import io.rsocket.routing.frames.RouteSetup;
+import reactor.core.Disposable;
+import reactor.core.publisher.Sinks;
+import reactor.core.publisher.Sinks.One;
 
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -28,7 +33,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.rsocket.RSocketRequesterAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -41,14 +45,14 @@ import static io.rsocket.routing.config.RoutingClientProperties.CONFIG_PREFIX;
 
 @Configuration
 @EnableConfigurationProperties
-@ConditionalOnClass({ RSocket.class, RSocketRequester.class })
+@ConditionalOnClass({RSocket.class, RSocketRequester.class})
 @AutoConfigureAfter(BrokerRSocketStrategiesAutoConfiguration.class)
 @AutoConfigureBefore(RSocketRequesterAutoConfiguration.class)
 public class RoutingClientAutoConfiguration {
 
 	@Bean
 	@ConfigurationProperties(CONFIG_PREFIX)
-	public RoutingClientProperties routingClientConfiguration() {
+	public SpringRoutingClientProperties routingClientConfiguration() {
 		return new SpringRoutingClientProperties();
 	}
 
@@ -81,24 +85,69 @@ public class RoutingClientAutoConfiguration {
 
 	}
 
-
 	private RSocketConnectorConfigurer configurer(RSocketMessageHandler messageHandler) {
 		return rsocketFactory -> rsocketFactory //.addRequesterPlugin(interceptor)
 				.acceptor(messageHandler.responder());
 	}
 
 	@Bean
-	public SpringRoutingClient springRoutingClient(RoutingClientProperties config,
-			RSocketRequester.Builder builder) {
-		return new SpringRoutingClient(config, builder);
+	public SpringRouting springRouting(RoutingClientProperties config) {
+		return new SpringRouting(config);
 	}
 
+	@Bean
+	@ConditionalOnProperty(name = CONFIG_PREFIX + ".block", matchIfMissing = true)
+	public ClientThreadManager clientThreadManager() {
+		return new ClientThreadManager();
+	}
 
 	@Bean
 	@ConditionalOnProperty(name = CONFIG_PREFIX + ".auto-connect", matchIfMissing = true)
-	public BrokerClientConnectionListener brokerClientConnectionListener(
-			SpringRoutingClient client, ApplicationEventPublisher publisher) {
-		return new BrokerClientConnectionListener(client, publisher);
+	public RSocketRequester brokerClientRSocketRequester(RSocketRequester.Builder builder,
+			RoutingClientProperties properties, ClientThreadManager ignored) {
+		// TODO: use loadbalancer https://github.com/rsocket-routing/rsocket-routing-client/issues/8
+		RoutingClientProperties.Broker broker = properties.getBrokers().iterator().next();
+		RSocketRequester requester;
+
+		switch (broker.getTransport()) {
+		case WEBSOCKET:
+			//FIXME: allow setting path and scheme
+			requester = builder.websocket(URI.create("ws://" + broker.getHost() + ":" + broker.getPort()));
+		}
+		// TODO: custom ClientTransport https://github.com/rsocket-routing/rsocket-routing-client/issues/9
+		requester = builder.tcp(broker.getHost(), broker.getPort());
+
+		// if we don't subscribe, there won't be a connection to the broker.
+		requester.rsocketClient().source().subscribe();
+
+		return requester;
 	}
 
+	private class ClientThreadManager implements Disposable {
+
+		private One<Void> onClose = Sinks.one();
+
+		private ClientThreadManager() {
+			Thread awaitThread = new Thread("routing-client-thread") {
+				@Override
+				public void run() {
+					onClose.asMono().block();
+				}
+			};
+			awaitThread.setContextClassLoader(getClass().getClassLoader());
+			awaitThread.setDaemon(false);
+			awaitThread.start();
+		}
+
+		@Override
+		public void dispose() {
+			onClose.emitEmpty();
+		}
+
+		@Override
+		public boolean isDisposed() {
+			return false;
+		}
+
+	}
 }
