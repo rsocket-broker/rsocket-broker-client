@@ -24,7 +24,6 @@ import io.rsocket.transport.netty.client.TcpClientTransport;
 import io.rsocket.transport.netty.client.WebsocketClientTransport;
 import reactor.core.publisher.Mono;
 
-import org.springframework.messaging.rsocket.ClientRSocketFactoryConfigurer;
 import org.springframework.messaging.rsocket.RSocketConnectorConfigurer;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.messaging.rsocket.RSocketStrategies;
@@ -87,11 +86,19 @@ final class ClientRSocketRequesterBuilder implements RSocketRequester.Builder {
 		return delegate.rsocketStrategies(configurer);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
-	public RSocketRequester.Builder rsocketFactory(
-			ClientRSocketFactoryConfigurer configurer) {
-		return delegate.rsocketFactory(configurer);
+	public RSocketRequester tcp(String host, int port) {
+		return wrap(delegate.tcp(host, port));
+	}
+
+	@Override
+	public RSocketRequester websocket(URI uri) {
+		return wrap(delegate.websocket(uri));
+	}
+
+	@Override
+	public RSocketRequester transport(ClientTransport transport) {
+		return wrap(delegate.transport(transport));
 	}
 
 	@Override
@@ -100,20 +107,25 @@ final class ClientRSocketRequesterBuilder implements RSocketRequester.Builder {
 	}
 
 	@Override
+	@Deprecated
 	public Mono<RSocketRequester> connectTcp(String host, int port) {
 		return connect(TcpClientTransport.create(host, port));
 	}
 
 	@Override
+	@Deprecated
 	public Mono<RSocketRequester> connectWebSocket(URI uri) {
 		return connect(WebsocketClientTransport.create(uri));
 	}
 
 	@Override
+	@Deprecated
 	public Mono<RSocketRequester> connect(ClientTransport transport) {
-		return delegate.connect(transport)
-				.map(requester -> new ClientRSocketRequester(requester, properties,
-						routeMatcher));
+		return delegate.connect(transport).map(this::wrap);
+	}
+
+	private ClientRSocketRequester wrap(RSocketRequester requester) {
+		return new ClientRSocketRequester(requester, properties, routeMatcher);
 	}
 
 }

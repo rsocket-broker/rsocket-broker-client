@@ -21,6 +21,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.rsocket.RSocket;
+import io.rsocket.RSocketClient;
 import io.rsocket.routing.common.Id;
 import io.rsocket.routing.common.Key;
 import io.rsocket.routing.frames.Address;
@@ -53,6 +54,11 @@ final class ClientRSocketRequester implements RSocketRequester {
 	@Override
 	public RSocket rsocket() {
 		return delegate.rsocket();
+	}
+
+	@Override
+	public RSocketClient rsocketClient() {
+		return delegate.rsocketClient();
 	}
 
 	@Override
