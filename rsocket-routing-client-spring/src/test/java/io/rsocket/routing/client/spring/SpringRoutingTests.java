@@ -27,14 +27,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(properties = {"io.rsocket.routing.client.auto-connect=false"})
-public class SpringRoutingClientTests {
+public class SpringRoutingTests {
 
 	@Autowired
-	private SpringRoutingClient client;
+	private SpringRouting routing;
 
 	@Test
 	public void clientWorks() {
-		assertThat(client.getProperties().getRouteId()).isEqualTo(Id.from("00000000-0000-0000-0000-000000000011"));
+		assertThat(routing.getProperties().getRouteId()).isEqualTo(Id.from("00000000-0000-0000-0000-000000000011"));
 	}
 
 	@SpringBootConfiguration

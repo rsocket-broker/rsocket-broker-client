@@ -16,29 +16,26 @@
 
 package io.rsocket.routing.client;
 
-import java.io.IOException;
+import io.rsocket.routing.common.Id;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import io.rsocket.routing.config.ArchaiusConfigFactory;
-import io.rsocket.routing.config.RoutingClientProperties;
+import static org.assertj.core.api.Assertions.assertThat;
 
-public class DefaultRoutingClient implements RoutingClient {
+public class DefaultRoutingTests {
 
-	private final RoutingClientProperties config;
+	private DefaultRouting client;
 
-	public DefaultRoutingClient() {
-		this(ArchaiusConfigFactory.load());
+	@BeforeEach
+	public void setup() {
+		client = new DefaultRouting();
 	}
 
-	protected DefaultRoutingClient(RoutingClientProperties config) {
-		this.config = config;
-	}
-
-	/* for testing */ RoutingClientProperties getConfig() {
-		return this.config;
-	}
-
-	@Override
-	public void close() throws IOException {
-
+	@Disabled
+	@Test
+	public void clientWorks() {
+		assertThat(client.getConfig().getRouteId())
+				.isEqualTo(Id.from("00000000-0000-0000-0000-000000000001"));
 	}
 }
