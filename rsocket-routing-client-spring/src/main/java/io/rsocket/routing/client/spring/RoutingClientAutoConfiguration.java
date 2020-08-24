@@ -31,7 +31,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.rsocket.RSocketRequesterAutoConfiguration;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -47,7 +46,7 @@ import static io.rsocket.routing.config.RoutingClientProperties.CONFIG_PREFIX;
 @EnableConfigurationProperties
 @ConditionalOnClass({RSocket.class, RSocketRequester.class})
 @ConditionalOnProperty(name = CONFIG_PREFIX + ".enabled", matchIfMissing = true)
-@AutoConfigureAfter(BrokerRSocketStrategiesAutoConfiguration.class)
+@AutoConfigureAfter(ClientRSocketStrategiesAutoConfiguration.class)
 @AutoConfigureBefore(RSocketRequesterAutoConfiguration.class)
 public class RoutingClientAutoConfiguration {
 
@@ -60,7 +59,7 @@ public class RoutingClientAutoConfiguration {
 	@Scope("prototype") // TODO: I don't think prototype works here
 	@ConditionalOnMissingBean
 	public RSocketRequester.Builder routingClientRSocketRequesterBuilder(
-			RSocketMessageHandler messageHandler, RSocketStrategies strategies,
+			RSocketConnectorConfigurer configurer, RSocketStrategies strategies,
 			SpringRoutingClientProperties properties) {
 		RouteSetup.Builder routeSetup = RouteSetup.from(properties.getRouteId(),
 				properties.getServiceName());
@@ -78,15 +77,19 @@ public class RoutingClientAutoConfiguration {
 
 		RSocketRequester.Builder builder = RSocketRequester.builder()
 				.setupMetadata(routeSetup.build(), MimeTypes.ROUTING_FRAME_MIME_TYPE)
-				.rsocketStrategies(strategies).rsocketConnector(configurer(messageHandler));
+				.rsocketStrategies(strategies).rsocketConnector(configurer);
+
+		//TODO: RSocketRequesterBuilderCustomizer
 
 		return new ClientRSocketRequesterBuilder(builder, properties,
 				strategies.routeMatcher());
 
 	}
 
-	private RSocketConnectorConfigurer configurer(RSocketMessageHandler messageHandler) {
-		return rsocketFactory -> rsocketFactory //.addRequesterPlugin(interceptor)
+	@Bean
+	@ConditionalOnMissingBean
+	public RSocketConnectorConfigurer rSocketConnectorConfigurer(RSocketMessageHandler messageHandler) {
+		return connector -> connector //.addRequesterPlugin(interceptor)
 				.acceptor(messageHandler.responder());
 	}
 

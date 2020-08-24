@@ -59,9 +59,9 @@ import static io.rsocket.routing.config.RoutingClientProperties.CONFIG_PREFIX;
 @Configuration
 @ConditionalOnProperty(name = CONFIG_PREFIX + ".enabled", matchIfMissing = true)
 @AutoConfigureBefore(RSocketStrategiesAutoConfiguration.class)
-public class BrokerRSocketStrategiesAutoConfiguration {
+public class ClientRSocketStrategiesAutoConfiguration {
 	@Bean
-	public RSocketStrategiesCustomizer brokerRSocketStrategiesCustomizer() {
+	public RSocketStrategiesCustomizer clientRSocketStrategiesCustomizer() {
 		return strategies -> strategies
 				.decoder(new RoutingFrameDecoder())
 				.encoder(new RoutingFrameEncoder());
