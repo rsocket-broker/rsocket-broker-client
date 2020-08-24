@@ -39,6 +39,7 @@ import org.springframework.messaging.rsocket.RSocketConnectorConfigurer;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.messaging.rsocket.RSocketStrategies;
 import org.springframework.messaging.rsocket.annotation.support.RSocketMessageHandler;
+import org.springframework.util.CollectionUtils;
 
 import static io.rsocket.routing.config.RoutingClientProperties.CONFIG_PREFIX;
 
@@ -109,6 +110,9 @@ public class RoutingClientAutoConfiguration {
 	public RSocketRequester brokerClientRSocketRequester(RSocketRequester.Builder builder,
 			RoutingClientProperties properties, ClientThreadManager ignored) {
 		// TODO: use loadbalancer https://github.com/rsocket-routing/rsocket-routing-client/issues/8
+		if (CollectionUtils.isEmpty(properties.getBrokers())) {
+			throw new IllegalStateException(CONFIG_PREFIX + ".brokers may not be empty");
+		}
 		RoutingClientProperties.Broker broker = properties.getBrokers().iterator().next();
 		RSocketRequester requester;
 
