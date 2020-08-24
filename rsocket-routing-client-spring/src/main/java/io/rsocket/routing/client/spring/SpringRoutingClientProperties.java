@@ -32,7 +32,7 @@ import org.springframework.core.style.ToStringCreator;
 
 import static io.rsocket.routing.config.RoutingClientProperties.CONFIG_PREFIX;
 
-@ConfigurationProperties(CONFIG_PREFIX + ".address")
+@ConfigurationProperties(CONFIG_PREFIX)
 public class SpringRoutingClientProperties implements RoutingClientProperties {
 
 	private Id routeId = Id.random();

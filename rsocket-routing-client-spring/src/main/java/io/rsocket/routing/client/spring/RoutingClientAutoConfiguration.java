@@ -46,13 +46,13 @@ import static io.rsocket.routing.config.RoutingClientProperties.CONFIG_PREFIX;
 @Configuration
 @EnableConfigurationProperties
 @ConditionalOnClass({RSocket.class, RSocketRequester.class})
+@ConditionalOnProperty(name = CONFIG_PREFIX + ".enabled", matchIfMissing = true)
 @AutoConfigureAfter(BrokerRSocketStrategiesAutoConfiguration.class)
 @AutoConfigureBefore(RSocketRequesterAutoConfiguration.class)
 public class RoutingClientAutoConfiguration {
 
 	@Bean
-	@ConfigurationProperties(CONFIG_PREFIX)
-	public SpringRoutingClientProperties routingClientConfiguration() {
+	public SpringRoutingClientProperties springRoutingClientProperties() {
 		return new SpringRoutingClientProperties();
 	}
 

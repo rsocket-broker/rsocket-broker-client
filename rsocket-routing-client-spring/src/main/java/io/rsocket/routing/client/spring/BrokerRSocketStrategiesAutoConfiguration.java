@@ -38,6 +38,7 @@ import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.rsocket.RSocketStrategiesAutoConfiguration;
 import org.springframework.boot.rsocket.messaging.RSocketStrategiesCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -53,8 +54,10 @@ import org.springframework.core.io.buffer.NettyDataBufferFactory;
 import org.springframework.util.MimeType;
 
 import static io.rsocket.routing.client.spring.MimeTypes.ROUTING_FRAME_MIME_TYPE;
+import static io.rsocket.routing.config.RoutingClientProperties.CONFIG_PREFIX;
 
 @Configuration
+@ConditionalOnProperty(name = CONFIG_PREFIX + ".enabled", matchIfMissing = true)
 @AutoConfigureBefore(RSocketStrategiesAutoConfiguration.class)
 public class BrokerRSocketStrategiesAutoConfiguration {
 	@Bean
