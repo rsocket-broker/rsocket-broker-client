@@ -120,9 +120,10 @@ public class RoutingClientAutoConfiguration {
 		case WEBSOCKET:
 			//FIXME: allow setting path and scheme
 			requester = builder.websocket(URI.create("ws://" + broker.getHost() + ":" + broker.getPort()));
+		default:
+			// TODO: custom ClientTransport https://github.com/rsocket-routing/rsocket-routing-client/issues/9
+			requester = builder.tcp(broker.getHost(), broker.getPort());
 		}
-		// TODO: custom ClientTransport https://github.com/rsocket-routing/rsocket-routing-client/issues/9
-		requester = builder.tcp(broker.getHost(), broker.getPort());
 
 		// if we don't subscribe, there won't be a connection to the broker.
 		requester.rsocketClient().source().subscribe();
