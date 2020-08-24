@@ -109,10 +109,10 @@ public class RoutingClientAutoConfiguration {
 	@ConditionalOnProperty(name = CONFIG_PREFIX + ".auto-connect", matchIfMissing = true)
 	public RSocketRequester brokerClientRSocketRequester(RSocketRequester.Builder builder,
 			RoutingClientProperties properties, ClientThreadManager ignored) {
-		// TODO: use loadbalancer https://github.com/rsocket-routing/rsocket-routing-client/issues/8
 		if (CollectionUtils.isEmpty(properties.getBrokers())) {
 			throw new IllegalStateException(CONFIG_PREFIX + ".brokers may not be empty");
 		}
+		// TODO: use loadbalancer https://github.com/rsocket-routing/rsocket-routing-client/issues/8
 		RoutingClientProperties.Broker broker = properties.getBrokers().iterator().next();
 		RSocketRequester requester;
 
