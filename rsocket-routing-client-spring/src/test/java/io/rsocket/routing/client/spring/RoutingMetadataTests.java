@@ -27,10 +27,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(properties = {"io.rsocket.routing.client.auto-connect=false"})
-public class SpringRoutingTests {
+public class RoutingMetadataTests {
 
 	@Autowired
-	private SpringRouting routing;
+	private RoutingMetadata routing;
 
 	@Test
 	public void clientWorks() {

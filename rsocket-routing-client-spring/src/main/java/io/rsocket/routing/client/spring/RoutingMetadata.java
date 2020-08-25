@@ -24,11 +24,11 @@ import io.rsocket.routing.frames.Address;
 
 import org.springframework.messaging.rsocket.RSocketRequester;
 
-public class SpringRouting {
+public class RoutingMetadata {
 
 	private final RoutingClientProperties properties;
 
-	public SpringRouting(RoutingClientProperties properties) {
+	public RoutingMetadata(RoutingClientProperties properties) {
 		this.properties = properties;
 	}
 

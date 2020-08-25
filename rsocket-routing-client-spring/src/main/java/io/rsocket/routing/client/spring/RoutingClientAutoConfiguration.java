@@ -95,8 +95,8 @@ public class RoutingClientAutoConfiguration {
 	}
 
 	@Bean
-	public SpringRouting springRouting(RoutingClientProperties config) {
-		return new SpringRouting(config);
+	public RoutingMetadata routingMetadata(RoutingClientProperties config) {
+		return new RoutingMetadata(config);
 	}
 
 	@Bean
