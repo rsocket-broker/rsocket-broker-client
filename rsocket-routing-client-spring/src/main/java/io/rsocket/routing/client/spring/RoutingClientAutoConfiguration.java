@@ -19,6 +19,7 @@ package io.rsocket.routing.client.spring;
 import java.net.URI;
 
 import io.rsocket.RSocket;
+import io.rsocket.routing.common.Transport;
 import io.rsocket.routing.config.RoutingClientProperties;
 import io.rsocket.routing.frames.RouteSetup;
 import reactor.core.Disposable;
@@ -116,12 +117,11 @@ public class RoutingClientAutoConfiguration {
 		RoutingClientProperties.Broker broker = properties.getBrokers().iterator().next();
 		RSocketRequester requester;
 
-		switch (broker.getTransport()) {
-		case WEBSOCKET:
+		if (broker.getTransport() == Transport.WEBSOCKET) {
 			//FIXME: allow setting path and scheme
 			requester = builder.websocket(URI.create("ws://" + broker.getHost() + ":" + broker.getPort()));
-			break;
-		default:
+		}
+		else {
 			// TODO: custom ClientTransport https://github.com/rsocket-routing/rsocket-routing-client/issues/9
 			requester = builder.tcp(broker.getHost(), broker.getPort());
 		}
