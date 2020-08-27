@@ -17,6 +17,7 @@
 package io.rsocket.routing.client.spring;
 
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,7 +26,10 @@ import io.rsocket.RSocketClient;
 import io.rsocket.routing.common.Id;
 import io.rsocket.routing.common.Key;
 import io.rsocket.routing.frames.Address;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.lang.Nullable;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.util.Assert;
@@ -73,9 +77,12 @@ final class ClientRSocketRequester implements RSocketRequester {
 
 	@Override
 	public RequestSpec route(String route, Object... routeVars) {
-		RequestSpec requestSpec = delegate.route(route, routeVars);
+		String expandedRoute = expand(route, routeVars);
+		RequestSpec requestSpec = new ClientRequestSpec(delegate.route(route, routeVars), properties
+				.isFailIfMissingRoutingMetadata(), expandedRoute);
+
 		// needs to be expanded with routeVars
-		RouteMatcher.Route parsed = routeMatcher.parseRoute(expand(route, routeVars));
+		RouteMatcher.Route parsed = routeMatcher.parseRoute(expandedRoute);
 
 		properties.getAddress().entrySet().stream()
 				.filter(entry -> routeMatcher.match(entry.getKey(), parsed)).findFirst()
@@ -91,7 +98,8 @@ final class ClientRSocketRequester implements RSocketRequester {
 		return requestSpec;
 	}
 
-	/* for testing */ static Address.Builder address(RouteMatcher routeMatcher,
+	/* for testing */
+	static Address.Builder address(RouteMatcher routeMatcher,
 			RouteMatcher.Route route, Id originRouteId, String routeKey,
 			Map<? extends Key, String> tags) {
 		Map<String, String> extracted = routeMatcher.matchAndExtract(routeKey, route);
@@ -110,10 +118,12 @@ final class ClientRSocketRequester implements RSocketRequester {
 
 	@Override
 	public RequestSpec metadata(Object metadata, MimeType mimeType) {
-		return delegate.metadata(metadata, mimeType);
+		return new ClientRequestSpec(delegate.metadata(metadata, mimeType), properties
+				.isFailIfMissingRoutingMetadata(), "unknown route");
 	}
 
-	/* for testing */ static String expand(String route, Object... routeVars) {
+	/* for testing */
+	static String expand(String route, Object... routeVars) {
 		if (ObjectUtils.isEmpty(routeVars)) {
 			return route;
 		}
@@ -131,7 +141,8 @@ final class ClientRSocketRequester implements RSocketRequester {
 		return sb.toString();
 	}
 
-	/* for testing */ static String expand(String template, Map<String, ?> vars) {
+	/* for testing */
+	static String expand(String template, Map<String, ?> vars) {
 		if (template == null) {
 			return null;
 		}
@@ -187,6 +198,95 @@ final class ClientRSocketRequester implements RSocketRequester {
 
 	private static String getVariableValueAsString(@Nullable Object variableValue) {
 		return (variableValue != null ? variableValue.toString() : "");
+	}
+
+	private class ClientRequestSpec implements RequestSpec {
+
+		private final RequestSpec delegate;
+		private final boolean failIfMissingRoutingMetadata;
+		private final String route;
+		private boolean hasRoutingMetadata;
+
+		public ClientRequestSpec(RequestSpec delegate, boolean failIfMissingRoutingMetadata, String route) {
+			this.delegate = delegate;
+			this.failIfMissingRoutingMetadata = failIfMissingRoutingMetadata;
+			this.route = route;
+		}
+
+		@Override
+		public RequestSpec metadata(Consumer<MetadataSpec<?>> configurer) {
+			delegate.metadata(configurer);
+			return this;
+		}
+
+		@Override
+		public Mono<Void> sendMetadata() {
+			validateMetadataSet();
+			return delegate.sendMetadata();
+		}
+
+		@Override
+		public RetrieveSpec data(Object data) {
+			delegate.data(data);
+			return this;
+		}
+
+		@Override
+		public RetrieveSpec data(Object producer, Class<?> elementClass) {
+			delegate.data(producer, elementClass);
+			return this;
+		}
+
+		@Override
+		public RetrieveSpec data(Object producer, ParameterizedTypeReference<?> elementTypeRef) {
+			delegate.data(producer, elementTypeRef);
+			return this;
+		}
+
+		@Override
+		public RequestSpec metadata(Object metadata, MimeType mimeType) {
+			if (mimeType.equals(MimeTypes.ROUTING_FRAME_MIME_TYPE)) {
+				hasRoutingMetadata = true;
+			}
+			delegate.metadata(metadata, mimeType);
+			return this;
+		}
+
+		@Override
+		public Mono<Void> send() {
+			validateMetadataSet();
+			return delegate.send();
+		}
+
+		@Override
+		public <T> Mono<T> retrieveMono(Class<T> dataType) {
+			validateMetadataSet();
+			return delegate.retrieveMono(dataType);
+		}
+
+		@Override
+		public <T> Mono<T> retrieveMono(ParameterizedTypeReference<T> dataTypeRef) {
+			validateMetadataSet();
+			return delegate.retrieveMono(dataTypeRef);
+		}
+
+		@Override
+		public <T> Flux<T> retrieveFlux(Class<T> dataType) {
+			validateMetadataSet();
+			return delegate.retrieveFlux(dataType);
+		}
+
+		@Override
+		public <T> Flux<T> retrieveFlux(ParameterizedTypeReference<T> dataTypeRef) {
+			validateMetadataSet();
+			return delegate.retrieveFlux(dataTypeRef);
+		}
+
+		private void validateMetadataSet() {
+			if (failIfMissingRoutingMetadata && !hasRoutingMetadata) {
+				throw new IllegalArgumentException(MimeTypes.ROUTING_FRAME_MIME_TYPE + " metadata was not set for route: " + route);
+			}
+		}
 	}
 
 }

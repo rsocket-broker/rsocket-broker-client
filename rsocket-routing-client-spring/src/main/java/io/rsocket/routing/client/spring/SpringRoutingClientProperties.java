@@ -46,6 +46,8 @@ public class SpringRoutingClientProperties implements RoutingClientProperties {
 
 	private Map<String, Map<MutableKey, String>> address = new LinkedHashMap<>();
 
+	private boolean failIfMissingRoutingMetadata = true;
+
 	public SpringRoutingClientProperties() {
 	}
 
@@ -85,6 +87,14 @@ public class SpringRoutingClientProperties implements RoutingClientProperties {
 		return address;
 	}
 
+	public boolean isFailIfMissingRoutingMetadata() {
+		return this.failIfMissingRoutingMetadata;
+	}
+
+	public void setFailIfMissingRoutingMetadata(boolean failIfMissingRoutingMetadata) {
+		this.failIfMissingRoutingMetadata = failIfMissingRoutingMetadata;
+	}
+
 	@Override
 	public String toString() {
 		// @formatter:off
@@ -94,6 +104,7 @@ public class SpringRoutingClientProperties implements RoutingClientProperties {
 				.append("tags", getTags())
 				.append("broker", getBrokers())
 				.append("address", address)
+				.append("failIfMissingRoutingMetadata", failIfMissingRoutingMetadata)
 				.toString();
 		// @formatter:on
 	}
