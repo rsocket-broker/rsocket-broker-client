@@ -106,7 +106,11 @@ public class Address extends RoutingFrame {
 		}
 
 		public Address build() {
-			return new Address(originRouteId, metadataBuilder.buildTags(), buildTags());
+			Tags tags = buildTags();
+			if (tags.isEmpty()) {
+				throw new IllegalArgumentException("Address tags may not be empty");
+			}
+			return new Address(originRouteId, metadataBuilder.buildTags(), tags);
 		}
 	}
 }
