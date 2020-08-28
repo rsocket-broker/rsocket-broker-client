@@ -215,7 +215,10 @@ final class ClientRSocketRequester implements RSocketRequester {
 
 		@Override
 		public RequestSpec metadata(Consumer<MetadataSpec<?>> configurer) {
-			delegate.metadata(configurer);
+			// rather than call delegate, call configurer directly with this
+			// so metadata(Object metadata, MimeType mimeType) from this
+			// will be called instead to set hasRoutingMetadata properly.
+			configurer.accept(this);
 			return this;
 		}
 
