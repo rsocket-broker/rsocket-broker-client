@@ -87,17 +87,17 @@ final class ClientRSocketRequesterBuilder implements RSocketRequester.Builder {
 	}
 
 	@Override
-	public RSocketRequester tcp(String host, int port) {
+	public ClientRSocketRequester tcp(String host, int port) {
 		return wrap(delegate.tcp(host, port));
 	}
 
 	@Override
-	public RSocketRequester websocket(URI uri) {
+	public ClientRSocketRequester websocket(URI uri) {
 		return wrap(delegate.websocket(uri));
 	}
 
 	@Override
-	public RSocketRequester transport(ClientTransport transport) {
+	public ClientRSocketRequester transport(ClientTransport transport) {
 		return wrap(delegate.transport(transport));
 	}
 

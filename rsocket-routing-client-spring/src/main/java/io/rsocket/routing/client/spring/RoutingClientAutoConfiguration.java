@@ -60,7 +60,7 @@ public class RoutingClientAutoConfiguration {
 	@Bean
 	@Scope("prototype") // TODO: I don't think prototype works here
 	@ConditionalOnMissingBean
-	public RSocketRequester.Builder routingClientRSocketRequesterBuilder(
+	public ClientRSocketRequesterBuilder routingClientRSocketRequesterBuilder(
 			RSocketConnectorConfigurer configurer, RSocketStrategies strategies,
 			SpringRoutingClientProperties properties) {
 		RouteSetup.Builder routeSetup = RouteSetup.from(properties.getRouteId(),
@@ -108,14 +108,14 @@ public class RoutingClientAutoConfiguration {
 
 	@Bean
 	@ConditionalOnProperty(name = CONFIG_PREFIX + ".auto-connect", matchIfMissing = true)
-	public RSocketRequester brokerClientRSocketRequester(RSocketRequester.Builder builder,
+	public ClientRSocketRequester brokerClientRSocketRequester(ClientRSocketRequesterBuilder builder,
 			RoutingClientProperties properties, ClientThreadManager ignored) {
 		if (CollectionUtils.isEmpty(properties.getBrokers())) {
 			throw new IllegalStateException(CONFIG_PREFIX + ".brokers may not be empty");
 		}
 		// TODO: use loadbalancer https://github.com/rsocket-routing/rsocket-routing-client/issues/8
 		RoutingClientProperties.Broker broker = properties.getBrokers().iterator().next();
-		RSocketRequester requester;
+		ClientRSocketRequester requester;
 
 		if (broker.getTransport() == Transport.WEBSOCKET) {
 			//FIXME: allow setting path and scheme
