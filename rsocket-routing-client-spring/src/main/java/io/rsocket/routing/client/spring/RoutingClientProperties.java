@@ -24,16 +24,19 @@ import java.util.Map;
 import io.rsocket.routing.common.Id;
 import io.rsocket.routing.common.MutableKey;
 import io.rsocket.routing.common.Transport;
-import io.rsocket.routing.config.RoutingClientProperties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.core.style.ToStringCreator;
 
-import static io.rsocket.routing.config.RoutingClientProperties.CONFIG_PREFIX;
+import static io.rsocket.routing.client.spring.RoutingClientProperties.CONFIG_PREFIX;
 
 @ConfigurationProperties(CONFIG_PREFIX)
-public class SpringRoutingClientProperties implements RoutingClientProperties {
+public class RoutingClientProperties {
+
+	public static final String CONFIG_PREFIX = "io.rsocket.routing.client";
+
+	private boolean enabled;
 
 	private Id routeId = Id.random();
 
@@ -42,13 +45,21 @@ public class SpringRoutingClientProperties implements RoutingClientProperties {
 	private Map<MutableKey, String> tags = new LinkedHashMap<>();
 
 	@NestedConfigurationProperty
-	private List<BrokerImpl> brokers = new ArrayList<>();
+	private List<Broker> brokers = new ArrayList<>();
 
 	private Map<String, Map<MutableKey, String>> address = new LinkedHashMap<>();
 
 	private boolean failIfMissingRoutingMetadata = true;
 
-	public SpringRoutingClientProperties() {
+	public RoutingClientProperties() {
+	}
+
+	public boolean isEnabled() {
+		return this.enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 
 	public Id getRouteId() {
@@ -79,7 +90,7 @@ public class SpringRoutingClientProperties implements RoutingClientProperties {
 		return this.brokers;
 	}
 
-	public void setBrokers(List<BrokerImpl> brokers) {
+	public void setBrokers(List<Broker> brokers) {
 		this.brokers = brokers;
 	}
 
@@ -99,6 +110,7 @@ public class SpringRoutingClientProperties implements RoutingClientProperties {
 	public String toString() {
 		// @formatter:off
 		return new ToStringCreator(this)
+				.append("enabled", isEnabled())
 				.append("routeId", getRouteId())
 				.append("serviceName", getServiceName())
 				.append("tags", getTags())
@@ -109,7 +121,7 @@ public class SpringRoutingClientProperties implements RoutingClientProperties {
 		// @formatter:on
 	}
 
-	public static class BrokerImpl implements RoutingClientProperties.Broker {
+	public static class Broker {
 		private String host;
 
 		private int port;

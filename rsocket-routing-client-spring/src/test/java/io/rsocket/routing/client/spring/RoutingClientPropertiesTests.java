@@ -20,7 +20,7 @@ import java.util.Map;
 
 import io.rsocket.routing.common.Id;
 import io.rsocket.routing.common.MutableKey;
-import io.rsocket.routing.config.RoutingClientProperties.Broker;
+import io.rsocket.routing.client.spring.RoutingClientProperties.Broker;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +34,10 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 @SpringBootTest(webEnvironment = RANDOM_PORT,
 		properties = "io.rsocket.routing.client.auto-connect=false")
-public class SpringRoutingClientPropertiesTests {
+public class RoutingClientPropertiesTests {
 
 	@Autowired
-	SpringRoutingClientProperties properties;
+	RoutingClientProperties properties;
 
 	@Test
 	public void clientProperties() {

@@ -25,6 +25,7 @@ import io.rsocket.RSocket;
 import io.rsocket.RSocketClient;
 import io.rsocket.routing.common.Id;
 import io.rsocket.routing.common.Key;
+import io.rsocket.routing.common.WellKnownKey;
 import io.rsocket.routing.frames.Address;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -37,18 +38,18 @@ import org.springframework.util.MimeType;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.RouteMatcher;
 
-final class ClientRSocketRequester implements RSocketRequester {
+public final class RoutingRSocketRequester implements RSocketRequester {
 
 	/** For route variable replacement. */
 	private static final Pattern NAMES_PATTERN = Pattern.compile("\\{([^/]+?)\\}");
 
 	private final RSocketRequester delegate;
 
-	private final SpringRoutingClientProperties properties;
+	private final RoutingClientProperties properties;
 
 	private final RouteMatcher routeMatcher;
 
-	ClientRSocketRequester(RSocketRequester delegate, SpringRoutingClientProperties properties,
+	RoutingRSocketRequester(RSocketRequester delegate, RoutingClientProperties properties,
 			RouteMatcher routeMatcher) {
 		this.delegate = delegate;
 		this.properties = properties;
@@ -76,9 +77,9 @@ final class ClientRSocketRequester implements RSocketRequester {
 	}
 
 	@Override
-	public RequestSpec route(String route, Object... routeVars) {
+	public RoutingRequestSpec route(String route, Object... routeVars) {
 		String expandedRoute = expand(route, routeVars);
-		RequestSpec requestSpec = new ClientRequestSpec(delegate.route(route, routeVars), properties
+		RoutingRequestSpec requestSpec = new RoutingRequestSpec(delegate.route(route, routeVars), properties
 				.isFailIfMissingRoutingMetadata(), expandedRoute);
 
 		// needs to be expanded with routeVars
@@ -117,8 +118,8 @@ final class ClientRSocketRequester implements RSocketRequester {
 	}
 
 	@Override
-	public RequestSpec metadata(Object metadata, MimeType mimeType) {
-		return new ClientRequestSpec(delegate.metadata(metadata, mimeType), properties
+	public RoutingRequestSpec metadata(Object metadata, MimeType mimeType) {
+		return new RoutingRequestSpec(delegate.metadata(metadata, mimeType), properties
 				.isFailIfMissingRoutingMetadata(), "unknown route");
 	}
 
@@ -200,21 +201,39 @@ final class ClientRSocketRequester implements RSocketRequester {
 		return (variableValue != null ? variableValue.toString() : "");
 	}
 
-	private class ClientRequestSpec implements RequestSpec {
+	public class RoutingRequestSpec implements RequestSpec {
 
 		private final RequestSpec delegate;
 		private final boolean failIfMissingRoutingMetadata;
 		private final String route;
 		private boolean hasRoutingMetadata;
 
-		public ClientRequestSpec(RequestSpec delegate, boolean failIfMissingRoutingMetadata, String route) {
+		public RoutingRequestSpec(RequestSpec delegate, boolean failIfMissingRoutingMetadata, String route) {
 			this.delegate = delegate;
 			this.failIfMissingRoutingMetadata = failIfMissingRoutingMetadata;
 			this.route = route;
 		}
 
+		public RoutingRequestSpec address(String serviceName) {
+			delegate.metadata(spec -> {
+				Address address = Address.from(properties.getRouteId())
+						.with(WellKnownKey.SERVICE_NAME, serviceName).build();
+				spec.metadata(address, MimeTypes.ROUTING_FRAME_MIME_TYPE);
+			});
+			return this;
+		}
+
+		public RoutingRequestSpec address(Consumer<Address.Builder> builderConsumer) {
+			delegate.metadata(spec -> {
+				Address.Builder builder = Address.from(properties.getRouteId());
+				builderConsumer.accept(builder);
+				spec.metadata(builder.build(), MimeTypes.ROUTING_FRAME_MIME_TYPE);
+			});
+			return this;
+		}
+
 		@Override
-		public RequestSpec metadata(Consumer<MetadataSpec<?>> configurer) {
+		public RoutingRequestSpec metadata(Consumer<MetadataSpec<?>> configurer) {
 			// rather than call delegate, call configurer directly with this
 			// so metadata(Object metadata, MimeType mimeType) from this
 			// will be called instead to set hasRoutingMetadata properly.
@@ -247,7 +266,7 @@ final class ClientRSocketRequester implements RSocketRequester {
 		}
 
 		@Override
-		public RequestSpec metadata(Object metadata, MimeType mimeType) {
+		public RoutingRequestSpec metadata(Object metadata, MimeType mimeType) {
 			if (mimeType.equals(MimeTypes.ROUTING_FRAME_MIME_TYPE)) {
 				hasRoutingMetadata = true;
 			}

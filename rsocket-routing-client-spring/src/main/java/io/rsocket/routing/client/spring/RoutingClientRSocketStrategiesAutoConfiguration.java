@@ -54,12 +54,12 @@ import org.springframework.core.io.buffer.NettyDataBufferFactory;
 import org.springframework.util.MimeType;
 
 import static io.rsocket.routing.client.spring.MimeTypes.ROUTING_FRAME_MIME_TYPE;
-import static io.rsocket.routing.config.RoutingClientProperties.CONFIG_PREFIX;
+import static io.rsocket.routing.client.spring.RoutingClientProperties.CONFIG_PREFIX;
 
 @Configuration
 @ConditionalOnProperty(name = CONFIG_PREFIX + ".enabled", matchIfMissing = true)
 @AutoConfigureBefore(RSocketStrategiesAutoConfiguration.class)
-public class ClientRSocketStrategiesAutoConfiguration {
+public class RoutingClientRSocketStrategiesAutoConfiguration {
 	@Bean
 	public RSocketStrategiesCustomizer clientRSocketStrategiesCustomizer() {
 		return strategies -> strategies

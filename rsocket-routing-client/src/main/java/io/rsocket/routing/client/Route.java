@@ -16,23 +16,16 @@
 
 package io.rsocket.routing.client;
 
-import io.rsocket.routing.config.ArchaiusConfigFactory;
-import io.rsocket.routing.config.RoutingClientProperties;
+import java.util.function.Consumer;
 
-public class DefaultRouting {
+import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.CompositeByteBuf;
+import io.rsocket.routing.common.Tags;
 
-	private final RoutingClientProperties config;
+public interface Route {
+	ByteBufAllocator allocator();
 
-	public DefaultRouting() {
-		this(ArchaiusConfigFactory.load());
-	}
+	void encodeAddressMetadata(CompositeByteBuf metadataHolder, String serviceName);
 
-	protected DefaultRouting(RoutingClientProperties config) {
-		this.config = config;
-	}
-
-	/* for testing */ RoutingClientProperties getConfig() {
-		return this.config;
-	}
-
+	void encodeAddressMetadata(CompositeByteBuf metadataHolder, Consumer<Tags.Builder<?>> tagsConsumer);
 }

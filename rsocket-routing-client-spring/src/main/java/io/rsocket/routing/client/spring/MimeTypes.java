@@ -25,12 +25,11 @@ import org.springframework.util.MimeType;
  */
 public abstract class MimeTypes {
 
-	public static final String SUB_TYPE = "x.rsocket.routing.frame.v0";
 	/**
-	 * Address mime type.
+	 * Routing Frame mime type.
 	 */
-	public static final MimeType ROUTING_FRAME_MIME_TYPE = new MimeType("message",
-			SUB_TYPE);
+	public static final MimeType ROUTING_FRAME_MIME_TYPE = new MimeType(io.rsocket.routing.client.MimeTypes.MESSAGE_TYPE,
+			io.rsocket.routing.client.MimeTypes.ROUTING_FRAME_SUBTYPE);
 	public static final String ROUTING_FRAME_METADATA_KEY = "routingframe";
 
 	public static final MimeType COMPOSITE_MIME_TYPE = MimeType

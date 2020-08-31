@@ -22,9 +22,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ArchaiusConfigFactoryTests {
+public class ArchaiusSampleTests {
 
-	private RoutingClientProperties properties;
+	private ArchaiusRoutingClientProperties properties;
 
 	@BeforeEach
 	public void setup() {

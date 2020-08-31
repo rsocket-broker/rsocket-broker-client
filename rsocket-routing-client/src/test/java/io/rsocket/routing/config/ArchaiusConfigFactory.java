@@ -32,11 +32,11 @@ import reactor.core.Exceptions;
 
 public class ArchaiusConfigFactory {
 
-	public static RoutingClientProperties load() {
+	public static ArchaiusRoutingClientProperties load() {
 		return load("broker");
 	}
 
-	public static RoutingClientProperties load(String configname) {
+	public static ArchaiusRoutingClientProperties load(String configname) {
 		try {
 			LayeredConfig layeredConfig = new DefaultLayeredConfig("layered-routing-broker");
 			layeredConfig.addConfig(Layers.ENVIRONMENT, EnvironmentConfig.INSTANCE);
@@ -60,7 +60,7 @@ public class ArchaiusConfigFactory {
 			DefaultPropertyFactory propertyFactory = new DefaultPropertyFactory(layeredConfig);
 			ConfigProxyFactory factory = new ConfigProxyFactory(layeredConfig,
 					layeredConfig.getDecoder(), propertyFactory);
-			return factory.newProxy(RoutingClientProperties.class, RoutingClientProperties.CONFIG_PREFIX);
+			return factory.newProxy(ArchaiusRoutingClientProperties.class, ArchaiusRoutingClientProperties.CONFIG_PREFIX);
 		}
 		catch (ConfigException e) {
 			throw Exceptions.bubble(e);

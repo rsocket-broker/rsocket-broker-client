@@ -14,28 +14,35 @@
  * limitations under the License.
  */
 
-package io.rsocket.routing.client;
+package io.rsocket.routing.config;
+
+import java.util.List;
+import java.util.Map;
 
 import io.rsocket.routing.common.Id;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import io.rsocket.routing.common.MutableKey;
+import io.rsocket.routing.common.Transport;
 
-import static org.assertj.core.api.Assertions.assertThat;
+public interface ArchaiusRoutingClientProperties {
 
-public class DefaultRoutingTests {
+	String CONFIG_PREFIX = "io.rsocket.routing.client";
 
-	private DefaultRouting client;
+	Id getRouteId();
 
-	@BeforeEach
-	public void setup() {
-		client = new DefaultRouting();
+	String getServiceName();
+
+	Map<MutableKey, String> getTags();
+
+	List<? extends Broker> getBrokers();
+
+	interface Broker {
+
+		String getHost();
+
+		int getPort();
+
+		Transport getTransport();
+
 	}
 
-	@Disabled
-	@Test
-	public void clientWorks() {
-		assertThat(client.getConfig().getRouteId())
-				.isEqualTo(Id.from("00000000-0000-0000-0000-000000000001"));
-	}
 }

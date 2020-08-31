@@ -14,35 +14,12 @@
  * limitations under the License.
  */
 
-package io.rsocket.routing.config;
+package io.rsocket.routing.client;
 
-import java.util.List;
-import java.util.Map;
+public class MimeTypes {
 
-import io.rsocket.routing.common.Id;
-import io.rsocket.routing.common.MutableKey;
-import io.rsocket.routing.common.Transport;
-
-public interface RoutingClientProperties {
-
-	String CONFIG_PREFIX = "io.rsocket.routing.client";
-
-	Id getRouteId();
-
-	String getServiceName();
-
-	Map<MutableKey, String> getTags();
-
-	List<? extends Broker> getBrokers();
-
-	interface Broker {
-
-		String getHost();
-
-		int getPort();
-
-		Transport getTransport();
-
-	}
+	public static final String MESSAGE_TYPE = "message";
+	public static final String ROUTING_FRAME_SUBTYPE = "x.rsocket.routing.frame.v0";
+	public static final String ROUTING_FRAME_MIME_TYPE = MESSAGE_TYPE + "/" + ROUTING_FRAME_SUBTYPE;
 
 }
