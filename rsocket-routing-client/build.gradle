@@ -4,10 +4,12 @@ dependencies {
 	api project(':rsocket-routing-common')
 	api project(':rsocket-routing-frames')
 	api 'io.rsocket:rsocket-core'
-	implementation "com.netflix.archaius:archaius2-core"
 
 	implementation 'io.projectreactor.netty:reactor-netty'
 
-	testImplementation 'org.junit.jupiter:junit-jupiter'
+	testImplementation 'com.netflix.archaius:archaius2-core'
+	testImplementation 'io.rsocket:rsocket-transport-local'
 	testImplementation 'org.assertj:assertj-core'
-	testImplementation 'org.slf4j:slf4j-simple:1.7.30'}
+	testImplementation 'org.junit.jupiter:junit-jupiter'
+	testImplementation 'org.slf4j:slf4j-simple:1.7.30'
+}

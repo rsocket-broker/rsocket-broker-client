@@ -14,35 +14,18 @@
  * limitations under the License.
  */
 
-package io.rsocket.routing.config;
+package io.rsocket.routing.client;
 
-import java.util.List;
-import java.util.Map;
+import java.util.function.Consumer;
 
-import io.rsocket.routing.common.Id;
-import io.rsocket.routing.common.MutableKey;
-import io.rsocket.routing.common.Transport;
+import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.CompositeByteBuf;
+import io.rsocket.routing.common.Tags;
 
-public interface RoutingClientProperties {
+public interface Route {
+	ByteBufAllocator allocator();
 
-	String CONFIG_PREFIX = "io.rsocket.routing.client";
+	void encodeAddressMetadata(CompositeByteBuf metadataHolder, String serviceName);
 
-	Id getRouteId();
-
-	String getServiceName();
-
-	Map<MutableKey, String> getTags();
-
-	List<? extends Broker> getBrokers();
-
-	interface Broker {
-
-		String getHost();
-
-		int getPort();
-
-		Transport getTransport();
-
-	}
-
+	void encodeAddressMetadata(CompositeByteBuf metadataHolder, Consumer<Tags.Builder<?>> tagsConsumer);
 }

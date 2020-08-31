@@ -28,9 +28,9 @@ subprojects {
 	dependencyManagement {
 		imports {
 			mavenBom "io.projectreactor:reactor-bom:${reactorBomVersion}"
+			mavenBom "io.rsocket:rsocket-bom:${rsocketVersion}"
 			mavenBom "org.junit:junit-bom:${junitJupiterVersion}"
 			mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
-			mavenBom "io.rsocket:rsocket-bom:${rsocketVersion}"
 		}
 
 		dependencies {

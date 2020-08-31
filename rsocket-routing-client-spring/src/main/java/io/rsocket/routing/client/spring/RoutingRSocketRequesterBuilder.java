@@ -30,16 +30,16 @@ import org.springframework.messaging.rsocket.RSocketStrategies;
 import org.springframework.util.MimeType;
 import org.springframework.util.RouteMatcher;
 
-final class ClientRSocketRequesterBuilder implements RSocketRequester.Builder {
+final class RoutingRSocketRequesterBuilder implements RSocketRequester.Builder {
 
 	private final RSocketRequester.Builder delegate;
 
-	private final SpringRoutingClientProperties properties;
+	private final RoutingClientProperties properties;
 
 	private final RouteMatcher routeMatcher;
 
-	ClientRSocketRequesterBuilder(RSocketRequester.Builder delegate,
-			SpringRoutingClientProperties properties, RouteMatcher routeMatcher) {
+	RoutingRSocketRequesterBuilder(RSocketRequester.Builder delegate,
+			RoutingClientProperties properties, RouteMatcher routeMatcher) {
 		this.delegate = delegate;
 		this.properties = properties;
 		this.routeMatcher = routeMatcher;
@@ -87,17 +87,17 @@ final class ClientRSocketRequesterBuilder implements RSocketRequester.Builder {
 	}
 
 	@Override
-	public ClientRSocketRequester tcp(String host, int port) {
+	public RoutingRSocketRequester tcp(String host, int port) {
 		return wrap(delegate.tcp(host, port));
 	}
 
 	@Override
-	public ClientRSocketRequester websocket(URI uri) {
+	public RoutingRSocketRequester websocket(URI uri) {
 		return wrap(delegate.websocket(uri));
 	}
 
 	@Override
-	public ClientRSocketRequester transport(ClientTransport transport) {
+	public RoutingRSocketRequester transport(ClientTransport transport) {
 		return wrap(delegate.transport(transport));
 	}
 
@@ -124,8 +124,8 @@ final class ClientRSocketRequesterBuilder implements RSocketRequester.Builder {
 		return delegate.connect(transport).map(this::wrap);
 	}
 
-	private ClientRSocketRequester wrap(RSocketRequester requester) {
-		return new ClientRSocketRequester(requester, properties, routeMatcher);
+	private RoutingRSocketRequester wrap(RSocketRequester requester) {
+		return new RoutingRSocketRequester(requester, properties, routeMatcher);
 	}
 
 }

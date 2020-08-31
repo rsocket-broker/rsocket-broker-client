@@ -16,10 +16,8 @@
 
 package io.rsocket.routing.client.spring;
 
-import java.math.BigInteger;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import io.rsocket.routing.common.Id;
@@ -32,13 +30,13 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.util.RouteMatcher;
 import org.springframework.util.SimpleRouteMatcher;
 
-import static io.rsocket.routing.client.spring.ClientRSocketRequester.address;
-import static io.rsocket.routing.client.spring.ClientRSocketRequester.expand;
+import static io.rsocket.routing.client.spring.RoutingRSocketRequester.address;
+import static io.rsocket.routing.client.spring.RoutingRSocketRequester.expand;
 import static io.rsocket.routing.common.WellKnownKey.ROUTE_ID;
 import static io.rsocket.routing.common.WellKnownKey.SERVICE_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ClientRSocketRequesterTests {
+public class RoutingRSocketRequesterTests {
 
 	@Test
 	public void addressWorks() {

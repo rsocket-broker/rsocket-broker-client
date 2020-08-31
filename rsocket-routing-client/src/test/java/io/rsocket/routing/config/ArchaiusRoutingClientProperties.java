@@ -14,25 +14,35 @@
  * limitations under the License.
  */
 
-package io.rsocket.routing.client;
+package io.rsocket.routing.config;
 
-import io.rsocket.routing.config.ArchaiusConfigFactory;
-import io.rsocket.routing.config.RoutingClientProperties;
+import java.util.List;
+import java.util.Map;
 
-public class DefaultRouting {
+import io.rsocket.routing.common.Id;
+import io.rsocket.routing.common.MutableKey;
+import io.rsocket.routing.common.Transport;
 
-	private final RoutingClientProperties config;
+public interface ArchaiusRoutingClientProperties {
 
-	public DefaultRouting() {
-		this(ArchaiusConfigFactory.load());
-	}
+	String CONFIG_PREFIX = "io.rsocket.routing.client";
 
-	protected DefaultRouting(RoutingClientProperties config) {
-		this.config = config;
-	}
+	Id getRouteId();
 
-	/* for testing */ RoutingClientProperties getConfig() {
-		return this.config;
+	String getServiceName();
+
+	Map<MutableKey, String> getTags();
+
+	List<? extends Broker> getBrokers();
+
+	interface Broker {
+
+		String getHost();
+
+		int getPort();
+
+		Transport getTransport();
+
 	}
 
 }

@@ -19,6 +19,7 @@ package io.rsocket.routing.client;
 import java.util.function.Consumer;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.CompositeByteBuf;
 import io.rsocket.Payload;
 import io.rsocket.RSocket;
@@ -31,7 +32,7 @@ import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public class RoutingRSocketClient implements RSocketClient {
+public class RoutingRSocketClient implements RSocketClient, Route {
 
 	private final RoutingRSocketConnector connector;
 	private final RSocketClient delegate;
@@ -41,29 +42,30 @@ public class RoutingRSocketClient implements RSocketClient {
 		this.delegate = delegate;
 	}
 
-	public CompositeByteBuf address(String serviceName) {
+	@Override
+	public void encodeAddressMetadata(CompositeByteBuf metadataHolder, String serviceName) {
 		Tags tags = Tags.builder().with(WellKnownKey.SERVICE_NAME, serviceName)
 				.buildTags();
 		ByteBuf address = AddressFlyweight
 				.encode(connector.getAllocator(), connector.getRouteId(), Tags.empty(), tags);
-		return encodeComposite(address, MimeTypes.ROUTING_FRAME_MIME_TYPE);
+		encodeAndAddMetadata(metadataHolder, address, MimeTypes.ROUTING_FRAME_MIME_TYPE);
 	}
 
-	public CompositeByteBuf address(Consumer<Tags.Builder> tagsConsumer) {
-		Tags.Builder builder = Tags.builder();
+	@Override
+	public void encodeAddressMetadata(CompositeByteBuf metadataHolder, Consumer<Tags.Builder<?>> tagsConsumer) {
+		Tags.Builder<?> builder = Tags.builder();
 		tagsConsumer.accept(builder);
 		ByteBuf address = AddressFlyweight
 				.encode(connector.getAllocator(), connector.getRouteId(), Tags.empty(), builder.buildTags());
-		return encodeComposite(address, MimeTypes.ROUTING_FRAME_MIME_TYPE);
+		encodeAndAddMetadata(metadataHolder, address, MimeTypes.ROUTING_FRAME_MIME_TYPE);
 	}
 
-	private CompositeByteBuf encodeComposite(ByteBuf byteBuf, String mimeType) {
-		CompositeByteBuf composite = connector.getAllocator().compositeBuffer();
-		encodeAndAddMetadata(composite, byteBuf, mimeType);
-		return composite;
+	@Override
+	public ByteBufAllocator allocator() {
+		return connector.getAllocator();
 	}
 
-	public void encodeAndAddMetadata(CompositeByteBuf composite, ByteBuf byteBuf, String mimeType) {
+	private void encodeAndAddMetadata(CompositeByteBuf composite, ByteBuf byteBuf, String mimeType) {
 		CompositeMetadataCodec.encodeAndAddMetadata(composite, connector.getAllocator(), mimeType, byteBuf);
 	}
 

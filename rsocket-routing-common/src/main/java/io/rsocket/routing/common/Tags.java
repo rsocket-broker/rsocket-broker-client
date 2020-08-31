@@ -38,6 +38,22 @@ public class Tags {
 		return this.tags;
 	}
 
+	public String get(WellKnownKey key) {
+		return tags.get(Key.of(key));
+	}
+
+	public String get(String key) {
+		return tags.get(Key.of(key));
+	}
+
+	public boolean containsKey(WellKnownKey key) {
+		return tags.containsKey(Key.of(key));
+	}
+
+	public boolean containsKey(String key) {
+		return tags.containsKey(Key.of(key));
+	}
+
 	public Set<Entry<Key, String>> entries() {
 		return this.tags.entrySet();
 	}
@@ -64,7 +80,8 @@ public class Tags {
 		return Objects.hash(this.tags);
 	}
 
-	public static Builder builder() {
+	@SuppressWarnings("rawtypes")
+	public static Builder<?> builder() {
 		return new Builder();
 	}
 

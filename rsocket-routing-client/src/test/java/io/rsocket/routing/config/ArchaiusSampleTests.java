@@ -14,28 +14,29 @@
  * limitations under the License.
  */
 
-package io.rsocket.routing.client;
+package io.rsocket.routing.config;
 
 import io.rsocket.routing.common.Id;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DefaultRoutingTests {
+public class ArchaiusSampleTests {
 
-	private DefaultRouting client;
+	private ArchaiusRoutingClientProperties properties;
 
 	@BeforeEach
 	public void setup() {
-		client = new DefaultRouting();
+		/*System.setProperty(RoutingClientProperties.CONFIG_PREFIX + ".serviceName",
+				"servicefromproperties");*/
+		properties = ArchaiusConfigFactory.load("archaiustest1");
 	}
 
-	@Disabled
 	@Test
-	public void clientWorks() {
-		assertThat(client.getConfig().getRouteId())
-				.isEqualTo(Id.from("00000000-0000-0000-0000-000000000001"));
+	// https://github.com/Netflix/archaius/blob/2.x/archaius2-core/src/test/java/com/netflix/archaius/mapper/ProxyFactoryTest.java
+	public void configWorks() {
+		assertThat(properties.getServiceName()).isEqualTo("testservice");
+		assertThat(properties.getRouteId()).isEqualTo(Id.from("00000000-0000-0000-0000-000000000022"));
 	}
 }
