@@ -1,18 +1,20 @@
 description = 'RSocket Routing Client Spring'
 
 dependencies {
-	api(project(':rsocket-routing-client')) {
-		exclude group: 'com.netflix.archaius', module: 'archaius2-core'
-	}
+	api project(':rsocket-routing-client')
+	implementation project(':rsocket-routing-common-spring')
 	implementation project(':rsocket-routing-common')
 	implementation project(':rsocket-routing-frames')
 
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
 	implementation 'org.springframework.boot:spring-boot-starter-rsocket'
+
+	testImplementation 'org.assertj:assertj-core'
+	testImplementation 'org.junit.jupiter:junit-jupiter'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
-	testImplementation 'org.junit.jupiter:junit-jupiter'
-	testImplementation 'org.assertj:assertj-core'
+	testImplementation 'io.rsocket:rsocket-transport-local'
+
 }

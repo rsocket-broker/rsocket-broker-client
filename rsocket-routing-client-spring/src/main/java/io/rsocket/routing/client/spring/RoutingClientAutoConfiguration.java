@@ -16,15 +16,17 @@
 
 package io.rsocket.routing.client.spring;
 
-import java.net.URI;
-
 import io.rsocket.RSocket;
-import io.rsocket.routing.common.Transport;
+import io.rsocket.routing.common.spring.ClientTransportFactory;
+import io.rsocket.routing.common.spring.DefaultClientTransportFactory;
+import io.rsocket.routing.common.spring.TransportProperties;
 import io.rsocket.routing.frames.RouteSetup;
+import io.rsocket.transport.ClientTransport;
 import reactor.core.Disposable;
 import reactor.core.publisher.Sinks;
 import reactor.core.publisher.Sinks.One;
 
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -101,6 +103,11 @@ public class RoutingClientAutoConfiguration {
 	}
 
 	@Bean
+	public DefaultClientTransportFactory defaultClientTransportFactory() {
+		return new DefaultClientTransportFactory();
+	}
+
+	@Bean
 	@ConditionalOnProperty(name = CONFIG_PREFIX + ".block", matchIfMissing = true)
 	public ClientThreadManager clientThreadManager() {
 		return new ClientThreadManager();
@@ -109,22 +116,18 @@ public class RoutingClientAutoConfiguration {
 	@Bean
 	@ConditionalOnProperty(name = CONFIG_PREFIX + ".auto-connect", matchIfMissing = true)
 	public RoutingRSocketRequester brokerClientRSocketRequester(RoutingRSocketRequesterBuilder builder,
-			RoutingClientProperties properties, ClientThreadManager ignored) {
+			RoutingClientProperties properties, ObjectProvider<ClientTransportFactory> transportFactories, ClientThreadManager ignored) {
 		if (CollectionUtils.isEmpty(properties.getBrokers())) {
 			throw new IllegalStateException(CONFIG_PREFIX + ".brokers may not be empty");
 		}
 		// TODO: use loadbalancer https://github.com/rsocket-routing/rsocket-routing-client/issues/8
-		RoutingClientProperties.Broker broker = properties.getBrokers().iterator().next();
-		RoutingRSocketRequester requester;
+		TransportProperties broker = properties.getBrokers().iterator().next();
 
-		if (broker.getTransport() == Transport.WEBSOCKET) {
-			//FIXME: allow setting path and scheme
-			requester = builder.websocket(URI.create("ws://" + broker.getHost() + ":" + broker.getPort()));
-		}
-		else {
-			// TODO: custom ClientTransport https://github.com/rsocket-routing/rsocket-routing-client/issues/9
-			requester = builder.tcp(broker.getHost(), broker.getPort());
-		}
+		ClientTransport clientTransport = transportFactories.orderedStream().filter(factory -> factory.supports(broker)).findFirst()
+				.map(factory -> factory.create(broker))
+				.orElseThrow(() -> new IllegalStateException("Unknown transport " + properties));
+
+		RoutingRSocketRequester requester = builder.transport(clientTransport);
 
 		// if we don't subscribe, there won't be a connection to the broker.
 		requester.rsocketClient().source().subscribe();
@@ -132,9 +135,9 @@ public class RoutingClientAutoConfiguration {
 		return requester;
 	}
 
-	private class ClientThreadManager implements Disposable {
+	private static class ClientThreadManager implements Disposable {
 
-		private One<Void> onClose = Sinks.one();
+		private final One<Void> onClose = Sinks.one();
 
 		private ClientThreadManager() {
 			Thread awaitThread = new Thread("routing-client-thread") {

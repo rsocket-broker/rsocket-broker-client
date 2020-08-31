@@ -23,10 +23,9 @@ import java.util.Map;
 
 import io.rsocket.routing.common.Id;
 import io.rsocket.routing.common.MutableKey;
-import io.rsocket.routing.common.Transport;
+import io.rsocket.routing.common.spring.TransportProperties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.core.style.ToStringCreator;
 
 import static io.rsocket.routing.client.spring.RoutingClientProperties.CONFIG_PREFIX;
@@ -44,8 +43,7 @@ public class RoutingClientProperties {
 
 	private Map<MutableKey, String> tags = new LinkedHashMap<>();
 
-	@NestedConfigurationProperty
-	private List<Broker> brokers = new ArrayList<>();
+	private List<TransportProperties> brokers = new ArrayList<>();
 
 	private Map<String, Map<MutableKey, String>> address = new LinkedHashMap<>();
 
@@ -86,11 +84,11 @@ public class RoutingClientProperties {
 		this.tags = tags;
 	}
 
-	public List<? extends Broker> getBrokers() {
+	public List<? extends TransportProperties> getBrokers() {
 		return this.brokers;
 	}
 
-	public void setBrokers(List<Broker> brokers) {
+	public void setBrokers(List<TransportProperties> brokers) {
 		this.brokers = brokers;
 	}
 
@@ -121,46 +119,4 @@ public class RoutingClientProperties {
 		// @formatter:on
 	}
 
-	public static class Broker {
-		private String host;
-
-		private int port;
-
-		private Transport transport = Transport.TCP;
-
-		public String getHost() {
-			return this.host;
-		}
-
-		public void setHost(String host) {
-			this.host = host;
-		}
-
-		public int getPort() {
-			return this.port;
-		}
-
-		public void setPort(int port) {
-			this.port = port;
-		}
-
-		public Transport getTransport() {
-			return this.transport;
-		}
-
-		public void setTransport(Transport transport) {
-			this.transport = transport;
-		}
-
-		@Override
-		public String toString() {
-			// @formatter:off
-			return new ToStringCreator(this)
-					.append("host", host)
-					.append("port", port)
-					.append("transport", transport)
-					.toString();
-			// @formatter:on
-		}
-	}
 }

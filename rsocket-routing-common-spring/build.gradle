@@ -1,0 +1,11 @@
+description = 'RSocket Routing Common Spring'
+
+dependencies {
+	api 'io.rsocket:rsocket-core'
+	api 'io.rsocket:rsocket-transport-netty'
+
+	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+	testImplementation 'org.junit.jupiter:junit-jupiter'
+	testImplementation 'org.assertj:assertj-core'
+}

@@ -20,7 +20,7 @@ import java.util.Map;
 
 import io.rsocket.routing.common.Id;
 import io.rsocket.routing.common.MutableKey;
-import io.rsocket.routing.client.spring.RoutingClientProperties.Broker;
+import io.rsocket.routing.common.spring.TransportProperties;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,9 +52,11 @@ public class RoutingClientPropertiesTests {
 		assertThat(map).contains(entry(new MutableKey("SERVICE_NAME"), "test_responder"),
 				entry(new MutableKey("custom-tag"), "custom-value"));
 		assertThat(properties.getBrokers()).hasSize(1);
-		Broker broker = properties.getBrokers().get(0);
-		assertThat(broker.getHost()).isEqualTo("localhost");
-		assertThat(broker.getPort()).isEqualTo(7002);
+		TransportProperties broker = properties.getBrokers().get(0);
+		assertThat(broker.getTcp()).isNotNull();
+		TransportProperties.TcpProperties tcp = broker.getTcp();
+		assertThat(tcp.getHost()).isEqualTo("localhost");
+		assertThat(tcp.getPort()).isEqualTo(7002);
 	}
 
 	@SpringBootConfiguration
