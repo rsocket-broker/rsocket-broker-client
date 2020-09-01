@@ -2,9 +2,9 @@ description = 'RSocket Routing Client Spring'
 
 dependencies {
 	api project(':rsocket-routing-client')
-	implementation project(':rsocket-routing-common-spring')
-	implementation project(':rsocket-routing-common')
-	implementation project(':rsocket-routing-frames')
+	api project(':rsocket-routing-common-spring')
+	api project(':rsocket-routing-common')
+	api project(':rsocket-routing-frames')
 
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
