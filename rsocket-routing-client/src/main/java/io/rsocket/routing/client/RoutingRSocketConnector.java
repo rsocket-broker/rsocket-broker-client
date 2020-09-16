@@ -27,7 +27,7 @@ import io.netty.buffer.CompositeByteBuf;
 import io.netty.buffer.Unpooled;
 import io.rsocket.Payload;
 import io.rsocket.RSocket;
-import io.rsocket.RSocketClient;
+import io.rsocket.core.RSocketClient;
 import io.rsocket.core.RSocketConnector;
 import io.rsocket.frame.decoder.PayloadDecoder;
 import io.rsocket.metadata.CompositeMetadataCodec;
@@ -127,7 +127,7 @@ public class RoutingRSocketConnector {
 
 	public RoutingRSocketClient toRSocketClient(ClientTransport transport) {
 		createSetupPayload();
-		return new RoutingRSocketClient(this, delegate.toRSocketClient(transport));
+		return new RoutingRSocketClient(this, RSocketClient.from(delegate.connect(transport)));
 	}
 
 	private void createSetupPayload() {

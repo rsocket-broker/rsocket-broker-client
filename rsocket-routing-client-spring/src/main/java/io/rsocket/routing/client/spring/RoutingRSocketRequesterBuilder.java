@@ -17,11 +17,15 @@
 package io.rsocket.routing.client.spring;
 
 import java.net.URI;
+import java.util.List;
 import java.util.function.Consumer;
 
+import io.rsocket.loadbalance.LoadbalanceStrategy;
+import io.rsocket.loadbalance.LoadbalanceTarget;
 import io.rsocket.transport.ClientTransport;
 import io.rsocket.transport.netty.client.TcpClientTransport;
 import io.rsocket.transport.netty.client.WebsocketClientTransport;
+import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 
 import org.springframework.messaging.rsocket.RSocketConnectorConfigurer;
@@ -104,6 +108,11 @@ class RoutingRSocketRequesterBuilder implements RSocketRequester.Builder {
 	@Override
 	public RSocketRequester.Builder apply(Consumer<RSocketRequester.Builder> configurer) {
 		return delegate.apply(configurer);
+	}
+
+	@Override
+	public RSocketRequester transports(Publisher<List<LoadbalanceTarget>> targetPublisher, LoadbalanceStrategy loadbalanceStrategy) {
+		return delegate.transports(targetPublisher, loadbalanceStrategy);
 	}
 
 	@Override

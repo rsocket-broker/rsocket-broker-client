@@ -22,7 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.rsocket.RSocket;
-import io.rsocket.RSocketClient;
+import io.rsocket.core.RSocketClient;
 import io.rsocket.routing.common.Id;
 import io.rsocket.routing.common.Key;
 import io.rsocket.routing.common.WellKnownKey;

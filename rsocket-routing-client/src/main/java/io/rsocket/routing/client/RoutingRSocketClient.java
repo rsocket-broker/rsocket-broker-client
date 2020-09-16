@@ -23,7 +23,7 @@ import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.CompositeByteBuf;
 import io.rsocket.Payload;
 import io.rsocket.RSocket;
-import io.rsocket.RSocketClient;
+import io.rsocket.core.RSocketClient;
 import io.rsocket.metadata.CompositeMetadataCodec;
 import io.rsocket.routing.common.Tags;
 import io.rsocket.routing.common.WellKnownKey;
