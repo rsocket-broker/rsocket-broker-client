@@ -94,7 +94,7 @@ subprojects {
 				override = true
 
 				pkg {
-					repo = 'RSocket Routing Client'
+					repo = 'RSocket'
 					name = 'rsocket-routing-client'
 					licenses = ['Apache-2.0']
 
