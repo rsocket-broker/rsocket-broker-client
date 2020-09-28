@@ -34,7 +34,6 @@ subprojects {
 		}
 
 		dependencies {
-			dependency "com.netflix.archaius:archaius2-core:${archaius2Version}"
 			dependency "org.assertj:assertj-core:${assertjVersion}"
 		}
 	}
