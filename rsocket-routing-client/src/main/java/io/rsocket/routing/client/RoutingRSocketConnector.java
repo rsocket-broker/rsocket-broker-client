@@ -71,6 +71,7 @@ public class RoutingRSocketConnector {
 	/**
 	 * Static factory method to create an {@code RoutingRSocketConnector} instance and customize default
 	 * settings before connecting.
+	 * @return the {@link RoutingRSocketConnector} created.
 	 */
 	public static RoutingRSocketConnector create() {
 		return new RoutingRSocketConnector();
