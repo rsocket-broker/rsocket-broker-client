@@ -84,7 +84,6 @@ subprojects {
 
 	if (System.getenv().containsKey('BINTRAY_USER') && System.getenv().containsKey('BINTRAY_KEY')
 			&& System.getenv().containsKey('SONATYPE_USERNAME') && System.getenv().containsKey('SONATYPE_PASSWORD')) {
-		println ("project.version " + project.version)
 		plugins.withId('com.jfrog.bintray') {
 			bintray {
 				user = System.getenv('BINTRAY_USER')
