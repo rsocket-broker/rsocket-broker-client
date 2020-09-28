@@ -95,7 +95,7 @@ subprojects {
 
 				pkg {
 					repo = 'RSocket'
-					name = 'rsocket-routing'
+					name = 'rsocket-routing-client'
 					licenses = ['Apache-2.0']
 
 					issueTrackerUrl = 'https://github.com/rsocket-routing/rsocket-routing-client/issues'
