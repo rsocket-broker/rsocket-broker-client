@@ -37,4 +37,4 @@ jobs:
         BINTRAY_KEY: ${{ secrets.bintrayKey }}
         SONATYPE_USERNAME: ${{ secrets.sonatypeUsername }}
         SONATYPE_PASSWORD: ${{ secrets.sonatypePassword }}
-      run: ./gradlew -Pversion="${GITHUB_REF#refs/tags/}" -PbuildNumber="${$GITHUB_RUN_ID}" bintrayUpload
+      run: ./gradlew -Pversion="${GITHUB_REF#refs/tags/}" -PbuildNumber="${GITHUB_RUN_ID}" bintrayUpload
