@@ -16,6 +16,14 @@
 
 package io.rsocket.routing.client.spring;
 
+import static io.rsocket.routing.client.spring.RoutingRSocketRequester.address;
+import static io.rsocket.routing.client.spring.RoutingRSocketRequester.expand;
+import static io.rsocket.routing.common.WellKnownKey.ROUTE_ID;
+import static io.rsocket.routing.common.WellKnownKey.SERVICE_NAME;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,15 +34,12 @@ import io.rsocket.routing.common.Tags;
 import io.rsocket.routing.frames.Address;
 import org.junit.jupiter.api.Test;
 
+import org.springframework.messaging.rsocket.RSocketRequester;
+import org.springframework.messaging.rsocket.RSocketRequester.RequestSpec;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.RouteMatcher;
 import org.springframework.util.SimpleRouteMatcher;
 
-import static io.rsocket.routing.client.spring.RoutingRSocketRequester.address;
-import static io.rsocket.routing.client.spring.RoutingRSocketRequester.expand;
-import static io.rsocket.routing.common.WellKnownKey.ROUTE_ID;
-import static io.rsocket.routing.common.WellKnownKey.SERVICE_NAME;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class RoutingRSocketRequesterTests {
 
@@ -104,6 +109,21 @@ public class RoutingRSocketRequesterTests {
 	public void expandWithMismatchedCurlyBraces() {
 		String result = expand("/myurl/{{{{", Collections.emptyMap());
 		assertThat(result).isEqualTo("/myurl/{{{{");
+	}
+	
+	@Test
+	public void routeWithAddress() {
+		RequestSpec spec = mock(RequestSpec.class);
+		RSocketRequester requester = mock(RSocketRequester.class);
+		when(requester.route("route")).thenReturn(spec);
+		RoutingClientProperties properties = new RoutingClientProperties();
+		RouteMatcher routeMatcher = mock(RouteMatcher.class);
+		
+		RoutingRSocketRequester routingRSocketRequester = new RoutingRSocketRequester(requester, properties, routeMatcher);
+		routingRSocketRequester
+			.route("route")
+			.address("service")
+			.send();
 	}
 
 }
