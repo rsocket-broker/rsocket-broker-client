@@ -215,6 +215,7 @@ public final class RoutingRSocketRequester implements RSocketRequester {
 		}
 
 		public RoutingRequestSpec address(String serviceName) {
+			// call metadata directly so hasRoutingMetadata updated
 			metadata(spec -> {
 				Address address = Address.from(properties.getRouteId())
 						.with(WellKnownKey.SERVICE_NAME, serviceName).build();
@@ -224,6 +225,7 @@ public final class RoutingRSocketRequester implements RSocketRequester {
 		}
 
 		public RoutingRequestSpec address(Consumer<Address.Builder> builderConsumer) {
+			// call metadata directly so hasRoutingMetadata updated
 			metadata(spec -> {
 				Address.Builder builder = Address.from(properties.getRouteId());
 				builderConsumer.accept(builder);
