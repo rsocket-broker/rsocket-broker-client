@@ -215,7 +215,7 @@ public final class RoutingRSocketRequester implements RSocketRequester {
 		}
 
 		public RoutingRequestSpec address(String serviceName) {
-			delegate.metadata(spec -> {
+			metadata(spec -> {
 				Address address = Address.from(properties.getRouteId())
 						.with(WellKnownKey.SERVICE_NAME, serviceName).build();
 				spec.metadata(address, MimeTypes.ROUTING_FRAME_MIME_TYPE);
@@ -224,7 +224,7 @@ public final class RoutingRSocketRequester implements RSocketRequester {
 		}
 
 		public RoutingRequestSpec address(Consumer<Address.Builder> builderConsumer) {
-			delegate.metadata(spec -> {
+			metadata(spec -> {
 				Address.Builder builder = Address.from(properties.getRouteId());
 				builderConsumer.accept(builder);
 				spec.metadata(builder.build(), MimeTypes.ROUTING_FRAME_MIME_TYPE);
