@@ -33,12 +33,12 @@ import static io.rsocket.routing.frames.FlyweightUtils.encodeId;
  */
 public class RouteSetupFlyweight {
 
-	public static ByteBuf encode(ByteBufAllocator allocator, Id routeId, String serviceName, Tags tags) {
+	public static ByteBuf encode(ByteBufAllocator allocator, Id routeId, String serviceName, Tags tags, int flags) {
 		Objects.requireNonNull(routeId, "routeId may not be null");
 		Objects.requireNonNull(serviceName, "serviceName may not be null");
 		Objects.requireNonNull(tags, "tags may not be null");
 
-		ByteBuf byteBuf = FrameHeaderFlyweight.encode(allocator, FrameType.ROUTE_SETUP);
+		ByteBuf byteBuf = FrameHeaderFlyweight.encode(allocator, FrameType.ROUTE_SETUP, flags);
 		encodeId(byteBuf, routeId);
 
 		encodeByteString(byteBuf, serviceName);

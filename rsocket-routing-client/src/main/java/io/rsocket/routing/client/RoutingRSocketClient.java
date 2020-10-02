@@ -25,8 +25,9 @@ import io.rsocket.Payload;
 import io.rsocket.RSocket;
 import io.rsocket.core.RSocketClient;
 import io.rsocket.metadata.CompositeMetadataCodec;
-import io.rsocket.routing.common.Tags;
+import io.rsocket.routing.common.MimeTypes;
 import io.rsocket.routing.common.WellKnownKey;
+import io.rsocket.routing.frames.Address;
 import io.rsocket.routing.frames.AddressFlyweight;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
@@ -44,20 +45,15 @@ public class RoutingRSocketClient implements RSocketClient, Route {
 
 	@Override
 	public void encodeAddressMetadata(CompositeByteBuf metadataHolder, String serviceName) {
-		Tags tags = Tags.builder().with(WellKnownKey.SERVICE_NAME, serviceName)
-				.buildTags();
-		ByteBuf address = AddressFlyweight
-				.encode(connector.getAllocator(), connector.getRouteId(), Tags.empty(), tags);
-		encodeAndAddMetadata(metadataHolder, address, MimeTypes.ROUTING_FRAME_MIME_TYPE);
+		Address.Builder builder = Address.from(connector.getRouteId()).with(WellKnownKey.SERVICE_NAME, serviceName);
+		encodeAndAddMetadata(metadataHolder, builder.build());
 	}
 
 	@Override
-	public void encodeAddressMetadata(CompositeByteBuf metadataHolder, Consumer<Tags.Builder<?>> tagsConsumer) {
-		Tags.Builder<?> builder = Tags.builder();
-		tagsConsumer.accept(builder);
-		ByteBuf address = AddressFlyweight
-				.encode(connector.getAllocator(), connector.getRouteId(), Tags.empty(), builder.buildTags());
-		encodeAndAddMetadata(metadataHolder, address, MimeTypes.ROUTING_FRAME_MIME_TYPE);
+	public void encodeAddressMetadata(CompositeByteBuf metadataHolder, Consumer<Address.Builder> addressConsumer) {
+		Address.Builder builder = Address.from(connector.getRouteId());
+		addressConsumer.accept(builder);
+		encodeAndAddMetadata(metadataHolder, builder.build());
 	}
 
 	@Override
@@ -65,8 +61,10 @@ public class RoutingRSocketClient implements RSocketClient, Route {
 		return connector.getAllocator();
 	}
 
-	private void encodeAndAddMetadata(CompositeByteBuf composite, ByteBuf byteBuf, String mimeType) {
-		CompositeMetadataCodec.encodeAndAddMetadata(composite, connector.getAllocator(), mimeType, byteBuf);
+	private void encodeAndAddMetadata(CompositeByteBuf composite, Address address) {
+		ByteBuf byteBuf = AddressFlyweight
+				.encode(connector.getAllocator(), address.getOriginRouteId(), address.getMetadata(), address.getTags(), address.getFlags());
+		CompositeMetadataCodec.encodeAndAddMetadata(composite, connector.getAllocator(), MimeTypes.ROUTING_FRAME_MIME_TYPE, byteBuf);
 	}
 
 	@Override

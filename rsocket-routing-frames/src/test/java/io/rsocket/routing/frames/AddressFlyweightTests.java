@@ -35,7 +35,7 @@ class AddressFlyweightTests {
 				.with(WellKnownKey.MINOR_VERSION, "0")
 				.with("mycustomtag", "mycustomtagvalue")
 				.buildTags();
-		assertAddress(metadata, tags);
+		assertAddress(metadata, tags, 0b01_0100_0000);
 	}
 
 	@Test
@@ -45,13 +45,15 @@ class AddressFlyweightTests {
 				.with(WellKnownKey.MINOR_VERSION, "0")
 				.with("mycustomtag", "mycustomtagvalue")
 				.buildTags();
-		assertAddress(metadata, tags);
+		assertAddress(metadata, tags, 0b00_1000_0000);
 	}
 
-	private void assertAddress(Tags metadata, Tags tags) {
+	private void assertAddress(Tags metadata, Tags tags, int flags) {
 		Id originRouteId = Id.random();
+
 		ByteBuf encoded = AddressFlyweight
-				.encode(ByteBufAllocator.DEFAULT, originRouteId, metadata, tags);
+				.encode(ByteBufAllocator.DEFAULT, originRouteId, metadata, tags, flags);
+		assertThat(FrameHeaderFlyweight.flags(encoded)).isEqualTo(flags);
 		assertThat(FrameHeaderFlyweight.frameType(encoded)).isEqualTo(FrameType.ADDRESS);
 		assertThat(AddressFlyweight.originRouteId(encoded)).isEqualTo(originRouteId);
 		// FIXME: assertThat(AddressFlyweight.metadata(encoded)).isEqualTo(metadata);

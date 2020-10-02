@@ -33,6 +33,7 @@ import io.rsocket.frame.decoder.PayloadDecoder;
 import io.rsocket.metadata.CompositeMetadataCodec;
 import io.rsocket.metadata.WellKnownMimeType;
 import io.rsocket.routing.common.Id;
+import io.rsocket.routing.common.MimeTypes;
 import io.rsocket.routing.common.Tags;
 import io.rsocket.routing.frames.RouteSetupFlyweight;
 import io.rsocket.transport.ClientTransport;
@@ -146,7 +147,7 @@ public class RoutingRSocketConnector {
 			throw new IllegalArgumentException("serviceName must not be null or empty");
 		}
 
-		ByteBuf routeSetup = RouteSetupFlyweight.encode(allocator, setupRouteId, serviceName, setupTags);
+		ByteBuf routeSetup = RouteSetupFlyweight.encode(allocator, setupRouteId, serviceName, setupTags, 0);
 		CompositeByteBuf setupMetadata = allocator.compositeBuffer();
 		CompositeMetadataCodec
 				.encodeAndAddMetadata(setupMetadata, allocator, MimeTypes.ROUTING_FRAME_MIME_TYPE.toString(), routeSetup);

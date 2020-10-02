@@ -38,7 +38,7 @@ public final class RouteSetup extends RoutingFrame {
 	private final Tags tags;
 
 	private RouteSetup(Id routeId, String serviceName, Tags tags) {
-		super(FrameType.ROUTE_SETUP);
+		super(FrameType.ROUTE_SETUP, 0);
 		this.routeId = routeId;
 		this.serviceName = serviceName;
 		this.tags = tags;

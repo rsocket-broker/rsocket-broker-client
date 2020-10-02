@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.rsocket.routing.client;
+package io.rsocket.routing.common;
 
 public class MimeTypes {
 

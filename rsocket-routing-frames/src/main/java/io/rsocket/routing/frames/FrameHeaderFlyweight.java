@@ -30,24 +30,27 @@ public class FrameHeaderFlyweight {
 	private static final int MAJOR_VERSION_SIZE = Short.BYTES;
 	private static final int MINOR_VERSION_SIZE = Short.BYTES;
 	private static final int FRAME_TYPE_SIZE = Short.BYTES;
-	private static final int RESERVED_BITS = 10;
+	private static final int FRAME_FLAGS_MASK = 0b0000_0011_1111_1111;
+	private static final int FLAG_BITS = 10;
 
 	public static final int BYTES = MAJOR_VERSION_SIZE + MINOR_VERSION_SIZE + FRAME_TYPE_SIZE;
 
-	public static ByteBuf encode(ByteBufAllocator allocator, FrameType frameType) {
-		return encode(allocator, MAJOR_VERSION, MINOR_VERSION, frameType);
+	public static ByteBuf encode(ByteBufAllocator allocator, FrameType frameType, int flags) {
+		return encode(allocator, MAJOR_VERSION, MINOR_VERSION, frameType, flags);
 	}
 
 	public static ByteBuf encode(ByteBufAllocator allocator, short majorVersion,
-			short minorVersion, FrameType frameType) {
-		int id = frameType.getId();
-		// move id left 10 bits
-		id = id << RESERVED_BITS;
+			short minorVersion, FrameType frameType, int flags) {
+		//TODO: check that only one routing flag is set
+		//if (!frameType.canHaveMetadata() && ((flags & FLAGS_M) == FLAGS_M)) {
+		//	throw new IllegalStateException("bad value for metadata flag");
+		//}
+		int frameId = frameType.getId() << FLAG_BITS;
+		short typeAndFlags = (short) (frameId | (short) flags);
 		return allocator.buffer()
 				.writeShort(majorVersion)
 				.writeShort(minorVersion)
-				//TODO: first 6 bits only?
-				.writeShort(id);
+				.writeShort(typeAndFlags);
 	}
 
 	public static short majorVersion(ByteBuf byteBuf) {
@@ -58,10 +61,26 @@ public class FrameHeaderFlyweight {
 		return byteBuf.getShort(MAJOR_VERSION_SIZE);
 	}
 
+	public static int flags(final ByteBuf byteBuf) {
+		if (!byteBuf.isReadable(MAJOR_VERSION_SIZE + MINOR_VERSION_SIZE + Short.BYTES)) {
+			return 0;
+		}
+		byteBuf.markReaderIndex();
+		byteBuf.skipBytes(MAJOR_VERSION_SIZE + MINOR_VERSION_SIZE);
+		short typeAndFlags = byteBuf.readShort();
+		byteBuf.resetReaderIndex();
+		return typeAndFlags & FRAME_FLAGS_MASK;
+	}
+
 	public static FrameType frameType(ByteBuf byteBuf) {
-		int id = byteBuf.getShort(MAJOR_VERSION_SIZE + MINOR_VERSION_SIZE);
-		// move id right 10 bits
-		id = id >> RESERVED_BITS;
-		return FrameType.from(id);
+		if (!byteBuf.isReadable(MAJOR_VERSION_SIZE + MINOR_VERSION_SIZE + Short.BYTES)) {
+			return null;
+		}
+		byteBuf.markReaderIndex();
+		byteBuf.skipBytes(MAJOR_VERSION_SIZE + MINOR_VERSION_SIZE);
+		short typeAndFlags = byteBuf.readShort();
+		byteBuf.resetReaderIndex();
+		// move typeAndFlags right 10 bits
+		return FrameType.from(typeAndFlags >> FLAG_BITS);
 	}
 }

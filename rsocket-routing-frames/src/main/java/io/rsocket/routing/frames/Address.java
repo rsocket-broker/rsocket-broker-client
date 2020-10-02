@@ -16,6 +16,8 @@
 
 package io.rsocket.routing.frames;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
 
@@ -25,6 +27,7 @@ import io.rsocket.routing.common.Key;
 import io.rsocket.routing.common.Tags;
 import io.rsocket.routing.common.WellKnownKey;
 
+import static io.rsocket.routing.frames.AddressFlyweight.FLAGS_E;
 import static io.rsocket.routing.frames.AddressFlyweight.metadata;
 import static io.rsocket.routing.frames.AddressFlyweight.originRouteId;
 import static io.rsocket.routing.frames.AddressFlyweight.tags;
@@ -38,8 +41,8 @@ public class Address extends RoutingFrame {
 	private final Tags metadata;
 	private final Tags tags;
 
-	private Address(Id originRouteId, Tags metadata, Tags tags) {
-		super(FrameType.ADDRESS);
+	private Address(Id originRouteId, Tags metadata, Tags tags, int flags) {
+		super(FrameType.ADDRESS, flags);
 		this.originRouteId = originRouteId;
 		this.metadata = metadata;
 		this.tags = tags;
@@ -57,12 +60,23 @@ public class Address extends RoutingFrame {
 		return this.tags;
 	}
 
+	public boolean isEncrypted() {
+		int flag = getFlags() & FLAGS_E;
+		return flag == FLAGS_E;
+	}
+
+	public RoutingType getRoutingType() {
+		int routingType = getFlags() & (~AddressFlyweight.ROUTING_TYPE_MASK);
+		return RoutingType.from(routingType);
+	}
+
 	@Override
 	public String toString() {
 		return new StringJoiner(", ", Address.class.getSimpleName() + "[", "]")
 				.add("originRouteId=" + originRouteId)
 				.add("metadata=" + metadata)
 				.add("tags=" + tags)
+				.add("flags=" + getFlags())
 				.toString();
 	}
 
@@ -70,15 +84,47 @@ public class Address extends RoutingFrame {
 		return new Builder(originRouteId);
 	}
 
-	public static Address from(ByteBuf byteBuf) {
+	public static Address from(ByteBuf byteBuf, int flags) {
 		return from(originRouteId(byteBuf)).withMetadata(metadata(byteBuf))
-				.with(tags(byteBuf)).build();
+				.with(tags(byteBuf)).flags(flags).build();
+	}
+
+	public enum RoutingType {
+		UNICAST(AddressFlyweight.FLAGS_U),
+		MULTICAST(AddressFlyweight.FLAGS_M),
+		SHARD(AddressFlyweight.FLAGS_S);
+
+		private static Map<Integer, RoutingType> routingTypesByFlag;
+
+		static {
+			routingTypesByFlag = new HashMap<>();
+
+			for (RoutingType routingType : values()) {
+				routingTypesByFlag.put(routingType.getFlag(), routingType);
+			}
+		}
+
+		private int flag;
+
+		RoutingType(int flag) {
+			this.flag = flag;
+		}
+
+		public int getFlag() {
+			return this.flag;
+		}
+
+		public static RoutingType from(int flag) {
+			return routingTypesByFlag.get(flag);
+		}
 	}
 
 	public static final class Builder extends Tags.Builder<Builder> {
 		private final Id originRouteId;
 
 		private final Tags.Builder<?> metadataBuilder = Tags.builder();
+
+		private int flags = AddressFlyweight.FLAGS_U;
 
 		private Builder(Id originRouteId) {
 			Objects.requireNonNull(originRouteId, "id may not be null");
@@ -105,12 +151,32 @@ public class Address extends RoutingFrame {
 			return this;
 		}
 
+		public Builder encrypted() {
+			flags |= AddressFlyweight.FLAGS_E;
+			return this;
+		}
+
+		public Builder routingType(RoutingType routingType) {
+			if (routingType == null) {
+				throw new IllegalArgumentException("routingType may not be null");
+			}
+			// reset routing type flag
+			flags &= AddressFlyweight.ROUTING_TYPE_MASK;
+			flags |= routingType.getFlag();
+			return this;
+		}
+
 		public Address build() {
 			Tags tags = buildTags();
 			if (tags.isEmpty()) {
 				throw new IllegalArgumentException("Address tags may not be empty");
 			}
-			return new Address(originRouteId, metadataBuilder.buildTags(), tags);
+			return new Address(originRouteId, metadataBuilder.buildTags(), tags, flags);
+		}
+
+		public Builder flags(int flags) {
+			this.flags = flags;
+			return this;
 		}
 	}
 }

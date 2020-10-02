@@ -31,11 +31,24 @@ import static io.rsocket.routing.frames.FlyweightUtils.encodeId;
  */
 public class AddressFlyweight {
 
-	public static ByteBuf encode(ByteBufAllocator allocator, Id originRouteId, Tags metadata, Tags tags) {
+	/** (I)gnore flag: a value of 0 indicates the protocol can't ignore this frame */
+	public static final int FLAGS_I = 0b10_0000_0000;
+	/** (E)ncrypted flag: a value of 1 indicates the payload is encrypted */
+	public static final int FLAGS_E = 0b01_0000_0000;
+	/** (U)unicast flag: a value of 1 indicates unicast routing */
+	public static final int FLAGS_U = 0b00_1000_0000;
+	/** (M)ulticast flag: a value of 1 indicates multicast routing */
+	public static final int FLAGS_M = 0b00_0100_0000;
+	/** (S)hard flag: a value of 1 indicates shard routing */
+	public static final int FLAGS_S = 0b00_0010_0000;
+
+	static final int ROUTING_TYPE_MASK = 0b11_0001_1111;
+
+	public static ByteBuf encode(ByteBufAllocator allocator, Id originRouteId, Tags metadata, Tags tags, int flags) {
 		Objects.requireNonNull(originRouteId, "originRouteId may not be null");
 		Objects.requireNonNull(tags, "tags may not be null");
 
-		ByteBuf byteBuf = FrameHeaderFlyweight.encode(allocator, FrameType.ADDRESS);
+		ByteBuf byteBuf = FrameHeaderFlyweight.encode(allocator, FrameType.ADDRESS, flags);
 		encodeId(byteBuf, originRouteId);
 
 		//FIXME: how to deal with empty metadata?

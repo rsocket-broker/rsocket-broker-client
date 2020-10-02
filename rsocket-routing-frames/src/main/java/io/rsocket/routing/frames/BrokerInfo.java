@@ -35,7 +35,7 @@ public final class BrokerInfo extends RoutingFrame {
 	private final Tags tags;
 
 	private BrokerInfo(Id brokerId, long timestamp, Tags tags) {
-		super(FrameType.BROKER_INFO);
+		super(FrameType.BROKER_INFO, 0);
 		this.brokerId = brokerId;
 		this.timestamp = timestamp;
 		this.tags = tags;

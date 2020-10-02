@@ -20,12 +20,12 @@ import java.util.function.Consumer;
 
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.CompositeByteBuf;
-import io.rsocket.routing.common.Tags;
+import io.rsocket.routing.frames.Address;
 
 public interface Route {
 	ByteBufAllocator allocator();
 
 	void encodeAddressMetadata(CompositeByteBuf metadataHolder, String serviceName);
 
-	void encodeAddressMetadata(CompositeByteBuf metadataHolder, Consumer<Tags.Builder<?>> tagsConsumer);
+	void encodeAddressMetadata(CompositeByteBuf metadataHolder, Consumer<Address.Builder> addressConsumer);
 }

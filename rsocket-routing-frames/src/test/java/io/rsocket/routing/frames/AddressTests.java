@@ -20,12 +20,27 @@ import io.rsocket.routing.common.Id;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import static io.rsocket.routing.frames.Address.RoutingType.MULTICAST;
+import static org.assertj.core.api.Assertions.assertThat;
+
 class AddressTests {
 
 	@Test
 	void testEmptyTagsFails() {
 		Assertions.assertThrows(IllegalArgumentException.class, () ->
 				Address.from(Id.random()).build());
+	}
+
+	@Test
+	void testFlags() {
+		Address address = Address.from(Id.random()).with("mytag", "myval")
+				.encrypted().routingType(MULTICAST).build();
+		int flags = 0;
+		flags |= AddressFlyweight.FLAGS_E;
+		flags |= AddressFlyweight.FLAGS_M;
+		assertThat(address.getFlags()).isEqualTo(flags);
+		assertThat(address.getRoutingType()).isEqualTo(MULTICAST);
+		assertThat(address.isEncrypted()).isTrue();
 	}
 
 }

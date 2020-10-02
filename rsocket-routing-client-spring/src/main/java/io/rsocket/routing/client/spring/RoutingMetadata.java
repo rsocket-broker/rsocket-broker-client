@@ -19,6 +19,7 @@ package io.rsocket.routing.client.spring;
 import java.util.function.Consumer;
 
 import io.rsocket.routing.common.WellKnownKey;
+import io.rsocket.routing.common.spring.MimeTypes;
 import io.rsocket.routing.frames.Address;
 
 import org.springframework.messaging.rsocket.RSocketRequester;

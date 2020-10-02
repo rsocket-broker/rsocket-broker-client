@@ -18,12 +18,18 @@ package io.rsocket.routing.frames;
 
 public abstract class RoutingFrame {
 	private final FrameType frameType;
+	private final int flags;
 
-	protected RoutingFrame(FrameType frameType) {
+	protected RoutingFrame(FrameType frameType, int flags) {
 		this.frameType = frameType;
+		this.flags = flags;
 	}
 
 	public FrameType getFrameType() {
 		return this.frameType;
+	}
+
+	public int getFlags() {
+		return this.flags;
 	}
 }

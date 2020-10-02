@@ -30,11 +30,11 @@ import static io.rsocket.routing.frames.FlyweightUtils.encodeId;
  */
 public class RouteRemoveFlyweight {
 
-	public static ByteBuf encode(ByteBufAllocator allocator, Id brokerId, Id routeId, long timestamp) {
+	public static ByteBuf encode(ByteBufAllocator allocator, Id brokerId, Id routeId, long timestamp, int flags) {
 		Objects.requireNonNull(brokerId, "brokerId may not be null");
 		Objects.requireNonNull(routeId, "routeId may not be null");
 
-		ByteBuf byteBuf = FrameHeaderFlyweight.encode(allocator, FrameType.ROUTE_REMOVE);
+		ByteBuf byteBuf = FrameHeaderFlyweight.encode(allocator, FrameType.ROUTE_REMOVE, flags);
 		encodeId(byteBuf, brokerId);
 		encodeId(byteBuf, routeId);
 		byteBuf.writeLong(timestamp);

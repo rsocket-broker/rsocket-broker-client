@@ -31,11 +31,11 @@ import static io.rsocket.routing.frames.FlyweightUtils.encodeId;
  */
 public class BrokerInfoFlyweight {
 
-	public static ByteBuf encode(ByteBufAllocator allocator, Id brokerId, long timestamp, Tags tags) {
+	public static ByteBuf encode(ByteBufAllocator allocator, Id brokerId, long timestamp, Tags tags, int flags) {
 		Objects.requireNonNull(brokerId, "brokerId may not be null");
 		Objects.requireNonNull(tags, "tags may not be null");
 
-		ByteBuf byteBuf = FrameHeaderFlyweight.encode(allocator, FrameType.BROKER_INFO);
+		ByteBuf byteBuf = FrameHeaderFlyweight.encode(allocator, FrameType.BROKER_INFO, flags);
 		encodeId(byteBuf, brokerId);
 
 		byteBuf.writeLong(timestamp);

@@ -40,7 +40,7 @@ public final class RouteJoin extends RoutingFrame {
 
 	public RouteJoin(Id brokerId, Id routeId, long timestamp,
 			String serviceName, Tags tags) {
-		super(FrameType.ROUTE_JOIN);
+		super(FrameType.ROUTE_JOIN, 0);
 		this.brokerId = brokerId;
 		this.routeId = routeId;
 		this.timestamp = timestamp;

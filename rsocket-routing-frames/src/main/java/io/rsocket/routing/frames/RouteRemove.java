@@ -34,7 +34,7 @@ public final class RouteRemove extends RoutingFrame {
 	private final long timestamp;
 
 	public RouteRemove(Id brokerId, Id routeId, long timestamp) {
-		super(FrameType.ROUTE_REMOVE);
+		super(FrameType.ROUTE_REMOVE, 0);
 		this.brokerId = brokerId;
 		this.routeId = routeId;
 		this.timestamp = timestamp;

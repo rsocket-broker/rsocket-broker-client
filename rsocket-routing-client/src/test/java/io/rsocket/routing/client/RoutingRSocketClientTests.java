@@ -20,7 +20,9 @@ import io.netty.buffer.CompositeByteBuf;
 import io.rsocket.metadata.CompositeMetadata;
 import io.rsocket.metadata.CompositeMetadata.Entry;
 import io.rsocket.routing.common.Id;
+import io.rsocket.routing.common.MimeTypes;
 import io.rsocket.routing.frames.Address;
+import io.rsocket.routing.frames.AddressFlyweight;
 import io.rsocket.transport.local.LocalClientTransport;
 import org.junit.jupiter.api.Test;
 
@@ -60,10 +62,11 @@ public class RoutingRSocketClientTests {
 		Entry entry = compositeMetadata.stream().findFirst()
 				.orElseThrow(() -> new IllegalArgumentException("Unable to decode"));
 		assertThat(entry.getMimeType()).isEqualTo(MimeTypes.ROUTING_FRAME_MIME_TYPE);
-		Address address = Address.from(entry.getContent());
+		Address address = Address.from(entry.getContent(), AddressFlyweight.FLAGS_M);
 		assertThat(address).isNotNull();
 		assertThat(address.getOriginRouteId()).isEqualTo(ORIGIN_ID);
 		assertThat(address.getTags().get(SERVICE_NAME)).isEqualTo("remoteservice");
+		assertThat(address.getRoutingType()).isEqualTo(Address.RoutingType.MULTICAST);
 		return address;
 	}
 

@@ -26,6 +26,7 @@ import io.rsocket.core.RSocketClient;
 import io.rsocket.routing.common.Id;
 import io.rsocket.routing.common.Key;
 import io.rsocket.routing.common.WellKnownKey;
+import io.rsocket.routing.common.spring.MimeTypes;
 import io.rsocket.routing.frames.Address;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

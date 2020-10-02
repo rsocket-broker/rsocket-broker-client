@@ -19,6 +19,7 @@ package io.rsocket.routing.client.spring;
 import io.rsocket.RSocket;
 import io.rsocket.routing.common.spring.ClientTransportFactory;
 import io.rsocket.routing.common.spring.DefaultClientTransportFactory;
+import io.rsocket.routing.common.spring.MimeTypes;
 import io.rsocket.routing.common.spring.TransportProperties;
 import io.rsocket.routing.frames.RouteSetup;
 import io.rsocket.transport.ClientTransport;

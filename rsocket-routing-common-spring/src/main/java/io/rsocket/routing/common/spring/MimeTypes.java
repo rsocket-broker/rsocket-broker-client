@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.rsocket.routing.client.spring;
+package io.rsocket.routing.common.spring;
 
 import io.rsocket.metadata.WellKnownMimeType;
 
@@ -28,8 +28,8 @@ public abstract class MimeTypes {
 	/**
 	 * Routing Frame mime type.
 	 */
-	public static final MimeType ROUTING_FRAME_MIME_TYPE = new MimeType(io.rsocket.routing.client.MimeTypes.MESSAGE_TYPE,
-			io.rsocket.routing.client.MimeTypes.ROUTING_FRAME_SUBTYPE);
+	public static final MimeType ROUTING_FRAME_MIME_TYPE = new MimeType(io.rsocket.routing.common.MimeTypes.MESSAGE_TYPE,
+			io.rsocket.routing.common.MimeTypes.ROUTING_FRAME_SUBTYPE);
 	public static final String ROUTING_FRAME_METADATA_KEY = "routingframe";
 
 	public static final MimeType COMPOSITE_MIME_TYPE = MimeType

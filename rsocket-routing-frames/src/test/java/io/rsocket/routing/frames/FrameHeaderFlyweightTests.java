@@ -26,14 +26,12 @@ class FrameHeaderFlyweightTests {
 
 	@Test
 	void testEncoding() {
-		ByteBuf encoded = FrameHeaderFlyweight
-				.encode(ByteBufAllocator.DEFAULT, FrameType.ROUTE_SETUP);
-		assertThat(FrameHeaderFlyweight.majorVersion(encoded))
-				.isEqualTo(FrameHeaderFlyweight.MAJOR_VERSION);
-		assertThat(FrameHeaderFlyweight.minorVersion(encoded))
-				.isEqualTo(FrameHeaderFlyweight.MINOR_VERSION);
-		assertThat(FrameHeaderFlyweight.frameType(encoded))
-				.isEqualTo(FrameType.ROUTE_SETUP);
+		int flags = 0b01_0100_0000;
+		ByteBuf encoded = FrameHeaderFlyweight.encode(ByteBufAllocator.DEFAULT, FrameType.ROUTE_SETUP, flags);
+		assertThat(FrameHeaderFlyweight.majorVersion(encoded)).isEqualTo(FrameHeaderFlyweight.MAJOR_VERSION);
+		assertThat(FrameHeaderFlyweight.minorVersion(encoded)).isEqualTo(FrameHeaderFlyweight.MINOR_VERSION);
+		assertThat(FrameHeaderFlyweight.flags(encoded)).isEqualTo(flags);
+		assertThat(FrameHeaderFlyweight.frameType(encoded)).isEqualTo(FrameType.ROUTE_SETUP);
 	}
 
 }
