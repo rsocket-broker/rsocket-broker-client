@@ -23,6 +23,7 @@ import io.rsocket.routing.common.Id;
 import io.rsocket.routing.common.MimeTypes;
 import io.rsocket.routing.frames.Address;
 import io.rsocket.routing.frames.AddressFlyweight;
+import io.rsocket.routing.frames.RoutingType;
 import io.rsocket.transport.local.LocalClientTransport;
 import org.junit.jupiter.api.Test;
 
@@ -66,7 +67,7 @@ public class RoutingRSocketClientTests {
 		assertThat(address).isNotNull();
 		assertThat(address.getOriginRouteId()).isEqualTo(ORIGIN_ID);
 		assertThat(address.getTags().get(SERVICE_NAME)).isEqualTo("remoteservice");
-		assertThat(address.getRoutingType()).isEqualTo(Address.RoutingType.MULTICAST);
+		assertThat(address.getRoutingType()).isEqualTo(RoutingType.MULTICAST);
 		return address;
 	}
 

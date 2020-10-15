@@ -16,8 +16,6 @@
 
 package io.rsocket.routing.frames;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
 
@@ -87,36 +85,6 @@ public class Address extends RoutingFrame {
 	public static Address from(ByteBuf byteBuf, int flags) {
 		return from(originRouteId(byteBuf)).withMetadata(metadata(byteBuf))
 				.with(tags(byteBuf)).flags(flags).build();
-	}
-
-	public enum RoutingType {
-		UNICAST(AddressFlyweight.FLAGS_U),
-		MULTICAST(AddressFlyweight.FLAGS_M),
-		SHARD(AddressFlyweight.FLAGS_S);
-
-		private static Map<Integer, RoutingType> routingTypesByFlag;
-
-		static {
-			routingTypesByFlag = new HashMap<>();
-
-			for (RoutingType routingType : values()) {
-				routingTypesByFlag.put(routingType.getFlag(), routingType);
-			}
-		}
-
-		private int flag;
-
-		RoutingType(int flag) {
-			this.flag = flag;
-		}
-
-		public int getFlag() {
-			return this.flag;
-		}
-
-		public static RoutingType from(int flag) {
-			return routingTypesByFlag.get(flag);
-		}
 	}
 
 	public static final class Builder extends Tags.Builder<Builder> {

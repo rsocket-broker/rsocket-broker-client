@@ -20,7 +20,7 @@ import io.rsocket.routing.common.Id;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static io.rsocket.routing.frames.Address.RoutingType.MULTICAST;
+import static io.rsocket.routing.frames.RoutingType.MULTICAST;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AddressTests {
