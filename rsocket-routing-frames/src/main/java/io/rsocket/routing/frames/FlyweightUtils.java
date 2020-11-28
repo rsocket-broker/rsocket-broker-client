@@ -36,6 +36,7 @@ public class FlyweightUtils {
 
 	static String decodeByteString(ByteBuf byteBuf, int offset) {
 		int length = byteBuf.getByte(offset);
+		length &= UNSIGNED_BYTE_MAX_VALUE;
 		offset += Byte.BYTES;
 
 		return byteBuf.toString(offset, length, StandardCharsets.UTF_8);
@@ -43,6 +44,7 @@ public class FlyweightUtils {
 
 	static int decodeByteStringLength(ByteBuf byteBuf, int offset) {
 		int length = byteBuf.getByte(offset);
+		length &= UNSIGNED_BYTE_MAX_VALUE;
 		return Byte.BYTES + length;
 	}
 
