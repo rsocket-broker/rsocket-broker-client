@@ -154,7 +154,7 @@ public class RoutingClientAutoConfiguration {
 
 		@Override
 		public void dispose() {
-			onClose.emitEmpty();
+			onClose.emitEmpty((signalType, emitResult) -> false);
 		}
 
 		@Override
