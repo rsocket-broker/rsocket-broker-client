@@ -39,7 +39,7 @@ import org.springframework.util.MimeType;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.RouteMatcher;
 
-public final class RoutingRSocketRequester implements RSocketRequester {
+public class RoutingRSocketRequester implements RSocketRequester {
 
 	/** For route variable replacement. */
 	private static final Pattern NAMES_PATTERN = Pattern.compile("\\{([^/]+?)\\}");
