@@ -34,7 +34,7 @@ import org.springframework.messaging.rsocket.RSocketStrategies;
 import org.springframework.util.MimeType;
 import org.springframework.util.RouteMatcher;
 
-class RoutingRSocketRequesterBuilder implements RSocketRequester.Builder {
+public class RoutingRSocketRequesterBuilder implements RSocketRequester.Builder {
 
 	private final RSocketRequester.Builder delegate;
 
