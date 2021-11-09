@@ -37,21 +37,24 @@ subprojects {
 		}
 	}
 
-	java {
-		withJavadocJar()
-		withSourcesJar()
-	}
+	plugins.withType(JavaLibraryPlugin) {
+		task sourcesJar(type: Jar) {
+			classifier 'sources'
+			from sourceSets.main.allJava
+		}
 
-	publishing {
-		publications {
-			mavenJava(MavenPublication) {
-				from components.java
-				versionMapping {
-					usage('java-api') {
-						fromResolutionOf('runtimeClasspath')
-					}
-					usage('java-runtime') {
-						fromResolutionResult()
+		task javadocJar(type: Jar, dependsOn: javadoc) {
+			classifier 'javadoc'
+			from javadoc.destinationDir
+		}
+
+		plugins.withType(MavenPublishPlugin) {
+			publishing {
+				publications {
+					maven(MavenPublication) {
+						from components.java
+						artifact sourcesJar
+						artifact javadocJar
 					}
 				}
 			}
