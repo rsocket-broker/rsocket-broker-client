@@ -5,7 +5,7 @@ subprojects {
     plugins.withType(MavenPublishPlugin) {
         publishing {
             publications {
-                mavenJava(MavenPublication) {
+                maven(MavenPublication) {
                     pom {
                         name = project.name
                         afterEvaluate {
