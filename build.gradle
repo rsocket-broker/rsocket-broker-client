@@ -1,7 +1,6 @@
 plugins {
-	id 'com.jfrog.artifactory' version '4.11.0' apply false
-	id 'com.jfrog.bintray' version '1.8.4' apply false
-	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+	id 'com.jfrog.artifactory' version '4.21.0' apply false
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 }
 
 
@@ -10,7 +9,7 @@ subprojects {
 	apply plugin: 'io.spring.dependency-management'
 	apply plugin: 'maven-publish'
 	apply plugin: 'com.jfrog.artifactory'
-	apply plugin: 'com.jfrog.bintray'
+	apply plugin: 'signing'
 
 	sourceCompatibility = '1.8'
 
@@ -55,74 +54,6 @@ subprojects {
 						fromResolutionResult()
 					}
 				}
-			}
-		}
-	}
-
-	if (System.getenv().containsKey('BINTRAY_USER') && System.getenv().containsKey('BINTRAY_KEY')) {
-		// from https://reflectoring.io/publish-snapshots-with-gradle/
-		artifactory {
-			contextUrl = 'https://oss.jfrog.org'
-			publish {
-				repository {
-					repoKey = 'oss-snapshot-local'
-					username = System.getenv('BINTRAY_USER')
-					password = System.getenv('BINTRAY_KEY')
-				}
-				defaults {
-					publications(publishing.publications.mavenJava)
-					publishArtifacts = true
-					publishPom = true
-				}
-			}
-			resolve {
-				repoKey = 'jcenter'
-			}
-			clientConfig.info.setBuildNumber(System.getProperty('build.number'))
-		}
-	}
-
-	if (System.getenv().containsKey('BINTRAY_USER') && System.getenv().containsKey('BINTRAY_KEY')
-			&& System.getenv().containsKey('SONATYPE_USERNAME') && System.getenv().containsKey('SONATYPE_PASSWORD')) {
-		plugins.withId('com.jfrog.bintray') {
-			bintray {
-				user = System.getenv('BINTRAY_USER')
-				key = System.getenv('BINTRAY_KEY')
-
-				publications = ['mavenJava']
-				publish = true
-				override = true
-
-				pkg {
-					repo = 'RSocket'
-					name = 'rsocket-routing-client'
-					licenses = ['Apache-2.0']
-
-					issueTrackerUrl = 'https://github.com/rsocket-routing/rsocket-routing-client/issues'
-					websiteUrl = 'https://github.com/rsocket-routing/rsocket-routing-client'
-					vcsUrl = 'https://github.com/rsocket-routing/rsocket-routing-client.git'
-
-					githubRepo = 'rsocket-routing/rsocket-routing-client' //Optional Github repository
-					githubReleaseNotesFile = 'README.md' //Optional Github readme file
-
-					version {
-						name = project.version
-						released = new Date()
-						vcsTag = project.version
-
-						gpg {
-							sign = true
-						}
-
-						mavenCentralSync {
-							user = System.getenv('SONATYPE_USERNAME')
-							password = System.getenv('SONATYPE_PASSWORD')
-						}
-					}
-				}
-			}
-			tasks.named("bintrayUpload").configure {
-				onlyIf { System.getenv('SKIP_RELEASE') != "true" }
 			}
 		}
 	}

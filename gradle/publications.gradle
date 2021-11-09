@@ -1,3 +1,5 @@
+apply from: "${rootDir}/gradle/github-pkg.gradle"
+apply from: "${rootDir}/gradle/sonotype.gradle"
 
 subprojects {
     plugins.withType(MavenPublishPlugin) {
