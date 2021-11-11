@@ -16,9 +16,11 @@
 
 package io.rsocket.routing.common.spring;
 
-public interface TransportFactory<TO_CREATE> {
-	boolean supports(TransportProperties properties);
+import java.net.URI;
 
-	TO_CREATE create(TransportProperties properties);
+public interface TransportFactory<TO_CREATE> {
+	boolean supports(URI uri);
+
+	TO_CREATE create(URI uri);
 
 }

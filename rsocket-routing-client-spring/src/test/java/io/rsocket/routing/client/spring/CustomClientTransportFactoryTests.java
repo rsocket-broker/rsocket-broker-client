@@ -16,10 +16,11 @@
 
 package io.rsocket.routing.client.spring;
 
+import java.net.URI;
+
 import io.rsocket.core.RSocketServer;
 import io.rsocket.routing.common.Id;
 import io.rsocket.routing.common.spring.ClientTransportFactory;
-import io.rsocket.routing.common.spring.TransportProperties;
 import io.rsocket.transport.ClientTransport;
 import io.rsocket.transport.local.LocalClientTransport;
 import io.rsocket.transport.local.LocalServerTransport;
@@ -37,13 +38,9 @@ import org.springframework.messaging.rsocket.RSocketStrategies;
 import org.springframework.util.RouteMatcher;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.entry;
 
 @SpringBootTest(properties = {"io.rsocket.routing.client.route-id=00000000-0000-0000-0000-000000000008",
-		"io.rsocket.routing.client.brokers[0].custom.type=local",
-		"io.rsocket.routing.client.brokers[0].custom.args.name=mylocal",
-		"io.rsocket.routing.client.brokers[0].cluster.custom.type=local",
-		"io.rsocket.routing.client.brokers[0].cluster.custom.args.name=myclusterlocal"})
+		"io.rsocket.routing.client.brokers[0]=local://mylocal?arg1=val1"})
 public class CustomClientTransportFactoryTests {
 
 	@Autowired
@@ -56,9 +53,8 @@ public class CustomClientTransportFactoryTests {
 	public void customPropertiesAreSet() {
 		assertThat(properties.getRouteId()).isEqualTo(Id.from("00000000-0000-0000-0000-000000000008"));
 		assertThat(properties.getBrokers()).hasSize(1);
-		TransportProperties broker = properties.getBrokers().get(0);
-		assertThat(broker.getCustom()).isNotNull();
-		assertThat(broker.getCustom().getArgs()).containsOnly(entry("name", "mylocal"));
+		URI broker = properties.getBrokers().get(0);
+		assertThat(broker).isNotNull().hasScheme("local").hasHost("mylocal").hasParameter("arg1", "val1");
 
 		assertThat(requesterBuilder.localTransportSet).isTrue();
 	}
@@ -91,13 +87,13 @@ public class CustomClientTransportFactoryTests {
 			RSocketServer.create().bind(LocalServerTransport.create("mylocal")).subscribe();
 			return new ClientTransportFactory() {
 				@Override
-				public boolean supports(TransportProperties properties) {
-					return properties.hasCustomTransport() && properties.getCustom().getType().equals("local");
+				public boolean supports(URI uri) {
+					return uri.getScheme().equalsIgnoreCase("local");
 				}
 
 				@Override
-				public ClientTransport create(TransportProperties properties) {
-					return LocalClientTransport.create(properties.getCustom().getArgs().get("name"));
+				public ClientTransport create(URI uri) {
+					return LocalClientTransport.create(uri.getHost());
 				}
 			};
 		}

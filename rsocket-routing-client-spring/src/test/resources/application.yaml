@@ -12,6 +12,4 @@ io.rsocket.routing.client:
     "[key.with.{replacement}]":
       service_name: service_with_replacement
   brokers:
-    - tcp:
-        host: localhost
-        port: 7002
+    - tcp://localhost:7002

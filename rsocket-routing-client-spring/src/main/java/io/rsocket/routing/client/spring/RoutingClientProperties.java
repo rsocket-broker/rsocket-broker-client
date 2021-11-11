@@ -16,6 +16,7 @@
 
 package io.rsocket.routing.client.spring;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -23,7 +24,6 @@ import java.util.Map;
 
 import io.rsocket.routing.common.Id;
 import io.rsocket.routing.common.MutableKey;
-import io.rsocket.routing.common.spring.TransportProperties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.style.ToStringCreator;
@@ -43,7 +43,7 @@ public class RoutingClientProperties {
 
 	private Map<MutableKey, String> tags = new LinkedHashMap<>();
 
-	private List<TransportProperties> brokers = new ArrayList<>();
+	private List<URI> brokers = new ArrayList<>();
 
 	private Map<String, Map<MutableKey, String>> address = new LinkedHashMap<>();
 
@@ -84,11 +84,11 @@ public class RoutingClientProperties {
 		this.tags = tags;
 	}
 
-	public List<? extends TransportProperties> getBrokers() {
+	public List<URI> getBrokers() {
 		return this.brokers;
 	}
 
-	public void setBrokers(List<TransportProperties> brokers) {
+	public void setBrokers(List<URI> brokers) {
 		this.brokers = brokers;
 	}
 

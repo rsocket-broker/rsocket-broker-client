@@ -16,6 +16,8 @@
 
 package io.rsocket.routing.common.spring;
 
+import java.net.URI;
+
 import io.rsocket.transport.ClientTransport;
 import io.rsocket.transport.netty.client.TcpClientTransport;
 import io.rsocket.transport.netty.client.WebsocketClientTransport;
@@ -23,19 +25,27 @@ import io.rsocket.transport.netty.client.WebsocketClientTransport;
 public class DefaultClientTransportFactory implements ClientTransportFactory {
 
 	@Override
-	public boolean supports(TransportProperties properties) {
-		return properties.getWebsocket() != null || properties.getTcp() != null;
+	public boolean supports(URI uri) {
+		return isWebsocket(uri) || isTcp(uri);
+	}
+
+	private boolean isTcp(URI uri) {
+		return uri.getScheme().equalsIgnoreCase("tcp");
+	}
+
+	private boolean isWebsocket(URI uri) {
+		return uri.getScheme().equalsIgnoreCase("ws") || uri.getScheme().equalsIgnoreCase("wss");
 	}
 
 	@Override
-	public ClientTransport create(TransportProperties properties) {
+	public ClientTransport create(URI uri) {
 		// order of precedence, websocket, tcp
-		if (properties.getWebsocket() != null) {
-			return WebsocketClientTransport.create(properties.getWebsocket().getUri());
+		if (isWebsocket(uri)) {
+			return WebsocketClientTransport.create(uri);
 		}
-		else if (properties.getTcp() != null) {
-			return TcpClientTransport.create(properties.getTcp().getHost(), properties.getTcp().getPort());
+		else if (isTcp(uri)) {
+			return TcpClientTransport.create(uri.getHost(), uri.getPort());
 		}
-		throw new IllegalArgumentException("No valid Transport configured " + properties);
+		throw new IllegalArgumentException("No valid Transport configured " + uri);
 	}
 }

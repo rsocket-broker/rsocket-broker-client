@@ -57,8 +57,10 @@ public enum WellKnownKey {
 	SHARD_METHOD("io.rsocket.routing.ShardMethod", (byte) 0x1C),
 	STICKY_ROUTE_KEY("io.rsocket.routing.StickyRouteKey", (byte) 0x1D),
 	LB_METHOD("io.rsocket.routing.LBMethod", (byte) 0x1E),
-	BROKER_EXTENSION("Broker Implementation Extension Key", (byte) 0x1E),
-	WELL_KNOWN_EXTENSION("Well Known Extension Key", (byte) 0x1E);
+	BROKER_EXTENSION("Broker Implementation Extension Key", (byte) 0x1F),
+	WELL_KNOWN_EXTENSION("Well Known Extension Key", (byte) 0x20),
+	BROKER_TCP_URI("Broker TCP URI Key", (byte) 0x21),
+	BROKER_WEBSOCKET_URI("Broker Websocket URI Key", (byte) 0x22);
 	// @formatter:on
 	// CHECKSTYLE:ON
 

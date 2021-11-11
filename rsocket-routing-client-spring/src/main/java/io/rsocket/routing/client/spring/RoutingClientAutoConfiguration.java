@@ -16,11 +16,12 @@
 
 package io.rsocket.routing.client.spring;
 
+import java.net.URI;
+
 import io.rsocket.RSocket;
 import io.rsocket.routing.common.spring.ClientTransportFactory;
 import io.rsocket.routing.common.spring.DefaultClientTransportFactory;
 import io.rsocket.routing.common.spring.MimeTypes;
-import io.rsocket.routing.common.spring.TransportProperties;
 import io.rsocket.routing.frames.RouteSetup;
 import io.rsocket.transport.ClientTransport;
 import reactor.core.Disposable;
@@ -54,6 +55,8 @@ import static io.rsocket.routing.client.spring.RoutingClientProperties.CONFIG_PR
 @AutoConfigureAfter(RoutingClientRSocketStrategiesAutoConfiguration.class)
 @AutoConfigureBefore(RSocketRequesterAutoConfiguration.class)
 public class RoutingClientAutoConfiguration {
+
+	//TODO: accept BrokerInfo to get updated broker nodes. Metadata Push
 
 	@Bean
 	public RoutingClientProperties routingClientProperties() {
@@ -122,7 +125,7 @@ public class RoutingClientAutoConfiguration {
 			throw new IllegalStateException(CONFIG_PREFIX + ".brokers may not be empty");
 		}
 		// TODO: use loadbalancer https://github.com/rsocket-routing/rsocket-routing-client/issues/8
-		TransportProperties broker = properties.getBrokers().iterator().next();
+		URI broker = properties.getBrokers().iterator().next();
 
 		ClientTransport clientTransport = transportFactories.orderedStream().filter(factory -> factory.supports(broker)).findFirst()
 				.map(factory -> factory.create(broker))
