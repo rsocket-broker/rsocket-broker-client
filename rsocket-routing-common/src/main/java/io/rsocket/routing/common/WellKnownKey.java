@@ -59,8 +59,8 @@ public enum WellKnownKey {
 	LB_METHOD("io.rsocket.routing.LBMethod", (byte) 0x1E),
 	BROKER_EXTENSION("Broker Implementation Extension Key", (byte) 0x1F),
 	WELL_KNOWN_EXTENSION("Well Known Extension Key", (byte) 0x20),
-	BROKER_TCP_URI("Broker TCP URI Key", (byte) 0x21),
-	BROKER_WEBSOCKET_URI("Broker Websocket URI Key", (byte) 0x22);
+	BROKER_PROXY_URI("Broker Proxy URI Key", (byte) 0x21),
+	BROKER_CLUSTER_URI("Broker Cluster URI Key", (byte) 0x22);
 	// @formatter:on
 	// CHECKSTYLE:ON
 
