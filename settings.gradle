@@ -2,10 +2,10 @@ plugins {
 	id 'org.kordamp.gradle.insight' version '0.47.0'
 }
 
-rootProject.name = 'rsocket-routing-client'
+rootProject.name = 'rsocket-broker-client'
 
-include "rsocket-routing-common"
-include "rsocket-routing-frames"
-include "rsocket-routing-client"
-include "rsocket-routing-common-spring"
-include "rsocket-routing-client-spring"
+include "rsocket-broker-common"
+include "rsocket-broker-frames"
+include "rsocket-broker-client"
+include "rsocket-broker-common-spring"
+include "rsocket-broker-client-spring"

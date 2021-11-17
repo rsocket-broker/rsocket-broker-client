@@ -1,0 +1,15 @@
+description = 'RSocket Broker Client'
+
+dependencies {
+	api project(':rsocket-broker-common')
+	api project(':rsocket-broker-frames')
+	api 'io.rsocket:rsocket-core'
+
+	implementation 'io.projectreactor.netty:reactor-netty'
+
+	testImplementation 'com.netflix.archaius:archaius2-core:2.3.16'
+	testImplementation 'io.rsocket:rsocket-transport-local'
+	testImplementation 'org.assertj:assertj-core'
+	testImplementation 'org.junit.jupiter:junit-jupiter'
+	testImplementation 'org.slf4j:slf4j-simple:1.7.30'
+}

@@ -69,7 +69,7 @@ subprojects {
 
 apply from: "${rootDir}/gradle/publications.gradle"
 
-description = 'RSocket Routing Client: client for RSocket Routing Broker.'
+description = 'RSocket Broker Client: client for RSocket Broker.'
 
 wrapper {
 	distributionType = Wrapper.DistributionType.ALL

@@ -1,0 +1,15 @@
+io.rsocket.broker.client:
+  route-id: 00000000-0000-0000-0000-000000000011
+  service-name: test_requester
+  tags:
+    INSTANCE_NAME: test_requester1
+  address:
+    test_responder-rc:
+      service_name: test_responder
+      custom-tag: custom-value
+    "[key.with.dots]":
+      service_name: service_with_dots
+    "[key.with.{replacement}]":
+      service_name: service_with_replacement
+  brokers:
+    - tcp://localhost:7002
