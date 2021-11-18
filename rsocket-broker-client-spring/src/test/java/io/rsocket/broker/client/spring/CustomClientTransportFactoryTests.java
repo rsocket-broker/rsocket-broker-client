@@ -17,14 +17,19 @@
 package io.rsocket.broker.client.spring;
 
 import java.net.URI;
+import java.util.List;
 
 import io.rsocket.core.RSocketServer;
 import io.rsocket.broker.common.Id;
 import io.rsocket.broker.common.spring.ClientTransportFactory;
+import io.rsocket.loadbalance.LoadbalanceStrategy;
+import io.rsocket.loadbalance.LoadbalanceTarget;
 import io.rsocket.transport.ClientTransport;
 import io.rsocket.transport.local.LocalClientTransport;
 import io.rsocket.transport.local.LocalServerTransport;
 import org.junit.jupiter.api.Test;
+import org.reactivestreams.Publisher;
+import reactor.core.publisher.Flux;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringBootConfiguration;
@@ -73,6 +78,19 @@ public class CustomClientTransportFactoryTests {
 				localTransportSet = true;
 			}
 			return super.transport(transport);
+		}
+
+		@Override
+		public BrokerRSocketRequester transports(Publisher<List<LoadbalanceTarget>> targetPublisher, LoadbalanceStrategy loadbalanceStrategy) {
+			Flux<List<LoadbalanceTarget>> targets = Flux.from(targetPublisher)
+					.map(loadbalanceTargets -> {
+						assertThat(loadbalanceTargets).hasSize(1);
+						if (loadbalanceTargets.get(0).getTransport() instanceof LocalClientTransport) {
+							localTransportSet = true;
+						}
+						return loadbalanceTargets;
+					});
+			return super.transports(targets, loadbalanceStrategy);
 		}
 	}
 

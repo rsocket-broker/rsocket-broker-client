@@ -111,8 +111,8 @@ public class BrokerRSocketRequesterBuilder implements RSocketRequester.Builder {
 	}
 
 	@Override
-	public RSocketRequester transports(Publisher<List<LoadbalanceTarget>> targetPublisher, LoadbalanceStrategy loadbalanceStrategy) {
-		return delegate.transports(targetPublisher, loadbalanceStrategy);
+	public BrokerRSocketRequester transports(Publisher<List<LoadbalanceTarget>> targetPublisher, LoadbalanceStrategy loadbalanceStrategy) {
+		return wrap(delegate.transports(targetPublisher, loadbalanceStrategy));
 	}
 
 	@Override

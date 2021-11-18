@@ -17,14 +17,19 @@
 package io.rsocket.broker.client.spring;
 
 import java.net.URI;
+import java.util.Collections;
+import java.util.List;
 
 import io.rsocket.RSocket;
 import io.rsocket.broker.common.spring.ClientTransportFactory;
 import io.rsocket.broker.common.spring.DefaultClientTransportFactory;
 import io.rsocket.broker.common.spring.MimeTypes;
 import io.rsocket.broker.frames.RouteSetup;
+import io.rsocket.loadbalance.LoadbalanceTarget;
+import io.rsocket.loadbalance.RoundRobinLoadbalanceStrategy;
 import io.rsocket.transport.ClientTransport;
 import reactor.core.Disposable;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
 import reactor.core.publisher.Sinks.One;
 
@@ -131,7 +136,10 @@ public class BrokerClientAutoConfiguration {
 				.map(factory -> factory.create(broker))
 				.orElseThrow(() -> new IllegalStateException("Unknown transport " + properties));
 
-		BrokerRSocketRequester requester = builder.transport(clientTransport);
+		// TODO: targets and strategy as beans
+		Flux<List<LoadbalanceTarget>> loadbalanceTargets = Flux.just(Collections.singletonList(LoadbalanceTarget.from("config", clientTransport)));
+		RoundRobinLoadbalanceStrategy loadbalanceStrategy = new RoundRobinLoadbalanceStrategy();
+		BrokerRSocketRequester requester = builder.transports(loadbalanceTargets, loadbalanceStrategy);
 
 		// if we don't subscribe, there won't be a connection to the broker.
 		requester.rsocketClient().source().subscribe();
