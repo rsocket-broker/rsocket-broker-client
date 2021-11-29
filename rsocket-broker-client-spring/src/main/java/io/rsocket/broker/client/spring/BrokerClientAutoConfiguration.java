@@ -137,9 +137,10 @@ public class BrokerClientAutoConfiguration {
 				.orElseThrow(() -> new IllegalStateException("Unknown transport " + properties));
 
 		// TODO: targets and strategy as beans
-		Flux<List<LoadbalanceTarget>> loadbalanceTargets = Flux.just(Collections.singletonList(LoadbalanceTarget.from("config", clientTransport)));
-		RoundRobinLoadbalanceStrategy loadbalanceStrategy = new RoundRobinLoadbalanceStrategy();
-		BrokerRSocketRequester requester = builder.transports(loadbalanceTargets, loadbalanceStrategy);
+		//Flux<List<LoadbalanceTarget>> loadbalanceTargets = Flux.just(Collections.singletonList(LoadbalanceTarget.from("config", clientTransport)));
+		//RoundRobinLoadbalanceStrategy loadbalanceStrategy = new RoundRobinLoadbalanceStrategy();
+		//BrokerRSocketRequester requester = builder.transports(loadbalanceTargets, loadbalanceStrategy);
+		BrokerRSocketRequester requester = builder.transport(clientTransport);
 
 		// if we don't subscribe, there won't be a connection to the broker.
 		requester.rsocketClient().source().subscribe();
