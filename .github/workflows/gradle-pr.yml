@@ -3,10 +3,6 @@
 
 name: Pull Request Java CI with Gradle
 
-env:
-  USERNAME: ${{ secrets.USERNAME }}
-  TOKEN: ${{ secrets.TOKEN }}
-
 on: [pull_request]
 
 jobs:
