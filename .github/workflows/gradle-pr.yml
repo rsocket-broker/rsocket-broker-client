@@ -5,6 +5,9 @@ name: Pull Request Java CI with Gradle
 
 on: [pull_request]
 
+permissions:
+  packages: read
+
 jobs:
   build:
 
