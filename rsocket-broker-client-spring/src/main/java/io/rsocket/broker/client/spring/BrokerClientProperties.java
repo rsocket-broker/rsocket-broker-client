@@ -27,6 +27,7 @@ import io.rsocket.broker.common.MutableKey;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.style.ToStringCreator;
+import org.springframework.util.MimeType;
 
 import static io.rsocket.broker.client.spring.BrokerClientProperties.CONFIG_PREFIX;
 
@@ -48,6 +49,8 @@ public class BrokerClientProperties {
 	private Map<String, Map<MutableKey, String>> address = new LinkedHashMap<>();
 
 	private boolean failIfMissingBrokerMetadata = true;
+
+	private MimeType dataMimeType;
 
 	public BrokerClientProperties() {
 	}
@@ -104,6 +107,14 @@ public class BrokerClientProperties {
 		this.failIfMissingBrokerMetadata = failIfMissingBrokerMetadata;
 	}
 
+	public MimeType getDataMimeType() {
+		return dataMimeType;
+	}
+
+	public void setDataMimeType(MimeType dataMimeType) {
+		this.dataMimeType = dataMimeType;
+	}
+
 	@Override
 	public String toString() {
 		// @formatter:off
@@ -115,6 +126,7 @@ public class BrokerClientProperties {
 				.append("broker", getBrokers())
 				.append("address", address)
 				.append("failIfMissingBrokerMetadata", failIfMissingBrokerMetadata)
+				.append("dataMimeType", dataMimeType)
 				.toString();
 		// @formatter:on
 	}

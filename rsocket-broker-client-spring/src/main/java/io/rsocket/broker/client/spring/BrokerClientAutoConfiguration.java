@@ -29,7 +29,6 @@ import reactor.core.publisher.Sinks;
 import reactor.core.publisher.Sinks.One;
 
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -69,7 +68,7 @@ public class BrokerClientAutoConfiguration {
 	@ConditionalOnMissingBean
 	public BrokerRSocketRequesterBuilder brokerRSocketRequesterBuilder(
 			RSocketConnectorConfigurer configurer, RSocketStrategies strategies,
-			BrokerClientProperties properties, @Autowired(required = false) BrokerClientMimeTypeSupplier brokerClientMimeTypeSupplier) {
+			BrokerClientProperties properties) {
 		RouteSetup.Builder routeSetup = RouteSetup.from(properties.getRouteId(),
 				properties.getServiceName());
 		properties.getTags().forEach((key, value) -> {
@@ -86,7 +85,7 @@ public class BrokerClientAutoConfiguration {
 
 		RSocketRequester.Builder builder = RSocketRequester.builder()
 				.setupMetadata(routeSetup.build(), MimeTypes.BROKER_FRAME_MIME_TYPE)
-				.dataMimeType(brokerClientMimeTypeSupplier != null ? brokerClientMimeTypeSupplier.get() : null)
+				.dataMimeType(properties.getDataMimeType() != null ? properties.getDataMimeType() : null)
 				.rsocketStrategies(strategies).rsocketConnector(configurer);
 
 		//TODO: BrokerRequesterBuilderCustomizer
