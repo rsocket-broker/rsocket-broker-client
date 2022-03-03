@@ -17,19 +17,14 @@
 package io.rsocket.broker.client.spring;
 
 import java.net.URI;
-import java.util.Collections;
-import java.util.List;
 
 import io.rsocket.RSocket;
 import io.rsocket.broker.common.spring.ClientTransportFactory;
 import io.rsocket.broker.common.spring.DefaultClientTransportFactory;
 import io.rsocket.broker.common.spring.MimeTypes;
 import io.rsocket.broker.frames.RouteSetup;
-import io.rsocket.loadbalance.LoadbalanceTarget;
-import io.rsocket.loadbalance.RoundRobinLoadbalanceStrategy;
 import io.rsocket.transport.ClientTransport;
 import reactor.core.Disposable;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
 import reactor.core.publisher.Sinks.One;
 
@@ -90,6 +85,7 @@ public class BrokerClientAutoConfiguration {
 
 		RSocketRequester.Builder builder = RSocketRequester.builder()
 				.setupMetadata(routeSetup.build(), MimeTypes.BROKER_FRAME_MIME_TYPE)
+				.dataMimeType(properties.getDataMimeType() != null ? properties.getDataMimeType() : null)
 				.rsocketStrategies(strategies).rsocketConnector(configurer);
 
 		//TODO: BrokerRequesterBuilderCustomizer
