@@ -36,6 +36,7 @@ import org.springframework.core.ResolvableType;
 import org.springframework.core.codec.AbstractDecoder;
 import org.springframework.core.codec.DecodingException;
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.core.io.buffer.NettyDataBuffer;
 import org.springframework.util.MimeType;
 
@@ -60,27 +61,32 @@ public class BrokerFrameDecoder extends AbstractDecoder<BrokerFrame> {
 
 	@Override
 	public BrokerFrame decode(DataBuffer buffer, ResolvableType targetType, MimeType mimeType, Map<String, Object> hints) throws DecodingException {
-		ByteBuf byteBuf = asByteBuf(buffer);
-		// FIXME hack for ClusterJoinListener.setupRSocket() in broker broker
-		if (!byteBuf.isReadable()) {
-			return new BrokerFrame(FrameType.RESERVED, 0) {
-			};
+		try {
+			ByteBuf byteBuf = asByteBuf(buffer);
+			// FIXME hack for ClusterJoinListener.setupRSocket() in broker broker
+			if (!byteBuf.isReadable()) {
+				return new BrokerFrame(FrameType.RESERVED, 0) {
+				};
+			}
+			int flags = FrameHeaderFlyweight.flags(byteBuf);
+			FrameType frameType = FrameHeaderFlyweight.frameType(byteBuf);
+			switch (frameType) {
+			case ADDRESS:
+				return Address.from(byteBuf, flags);
+			case BROKER_INFO:
+				return BrokerInfo.from(byteBuf);
+			case ROUTE_JOIN:
+				return RouteJoin.from(byteBuf);
+			case ROUTE_REMOVE:
+				return RouteRemove.from(byteBuf);
+			case ROUTE_SETUP:
+				return RouteSetup.from(byteBuf);
+			}
+			throw new IllegalArgumentException("Unknown FrameType " + frameType);
 		}
-		int flags = FrameHeaderFlyweight.flags(byteBuf);
-		FrameType frameType = FrameHeaderFlyweight.frameType(byteBuf);
-		switch (frameType) {
-		case ADDRESS:
-			return Address.from(byteBuf, flags);
-		case BROKER_INFO:
-			return BrokerInfo.from(byteBuf);
-		case ROUTE_JOIN:
-			return RouteJoin.from(byteBuf);
-		case ROUTE_REMOVE:
-			return RouteRemove.from(byteBuf);
-		case ROUTE_SETUP:
-			return RouteSetup.from(byteBuf);
+		finally {
+			DataBufferUtils.release(buffer);
 		}
-		throw new IllegalArgumentException("Unknown FrameType " + frameType);
 	}
 
 	private static ByteBuf asByteBuf(DataBuffer buffer) {
