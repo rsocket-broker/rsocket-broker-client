@@ -16,6 +16,7 @@ subprojects {
 	sourceCompatibility = '17'
 
 	repositories {
+		mavenLocal()
 		mavenCentral()
 		maven { url 'https://repo.spring.io/milestone' }
 		if (version.endsWith('SNAPSHOT')) {
@@ -28,15 +29,18 @@ subprojects {
 
 	dependencyManagement {
 		imports {
-			mavenBom "io.projectreactor:reactor-bom:${reactorBomVersion}"
-			mavenBom "io.rsocket:rsocket-bom:${rsocketVersion}"
-			mavenBom "org.junit:junit-bom:${junitJupiterVersion}"
 			mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
 		}
 
 		dependencies {
 			dependency "org.assertj:assertj-core:${assertjVersion}"
 		}
+	}
+
+	dependencies {
+		implementation platform("io.projectreactor:reactor-bom:${reactorBomVersion}")
+		implementation platform("io.rsocket:rsocket-bom:${rsocketVersion}")
+		implementation platform("org.junit:junit-bom:${junitJupiterVersion}")
 	}
 
 	java {
