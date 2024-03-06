@@ -34,6 +34,7 @@ import reactor.core.publisher.Mono;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.lang.Nullable;
 import org.springframework.messaging.rsocket.RSocketRequester;
+import org.springframework.messaging.rsocket.RSocketStrategies;
 import org.springframework.util.Assert;
 import org.springframework.util.MimeType;
 import org.springframework.util.ObjectUtils;
@@ -70,6 +71,11 @@ public class BrokerRSocketRequester implements RSocketRequester {
 	@Override
 	public MimeType dataMimeType() {
 		return delegate.dataMimeType();
+	}
+
+	@Override
+	public RSocketStrategies strategies(){
+		return delegate.strategies();
 	}
 
 	@Override
