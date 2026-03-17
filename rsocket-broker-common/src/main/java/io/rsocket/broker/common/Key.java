@@ -16,6 +16,10 @@
 
 package io.rsocket.broker.common;
 
+/**
+ * Represents a tag key that can be either a {@link WellKnownKey} (compact byte identifier)
+ * or a custom string key. Use {@link #of(String)} or {@link #of(WellKnownKey)} to create instances.
+ */
 public interface Key {
 	WellKnownKey getWellKnownKey();
 

@@ -7,9 +7,9 @@ dependencies {
 
 	implementation 'io.projectreactor.netty:reactor-netty'
 
-	testImplementation 'com.netflix.archaius:archaius2-core:2.3.16'
+	testImplementation 'com.netflix.archaius:archaius2-core:2.8.3'
 	testImplementation 'io.rsocket:rsocket-transport-local'
 	testImplementation 'org.assertj:assertj-core'
 	testImplementation 'org.junit.jupiter:junit-jupiter'
-	testImplementation 'org.slf4j:slf4j-simple:1.7.30'
+	testImplementation 'org.slf4j:slf4j-simple:2.0.16'
 }

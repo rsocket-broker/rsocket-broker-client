@@ -18,20 +18,7 @@ package io.rsocket.broker.common.spring;
 
 import java.util.Map;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.rsocket.broker.frames.Address;
-import io.rsocket.broker.frames.BrokerInfo;
-import io.rsocket.broker.frames.FrameHeaderFlyweight;
-import io.rsocket.broker.frames.FrameType;
-import io.rsocket.broker.frames.RouteJoin;
-import io.rsocket.broker.frames.RouteRemove;
-import io.rsocket.broker.frames.RouteSetup;
-import io.rsocket.broker.frames.BrokerFrame;
 import org.reactivestreams.Publisher;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
 import org.springframework.core.ResolvableType;
 import org.springframework.core.codec.AbstractDecoder;
 import org.springframework.core.codec.DecodingException;
@@ -40,7 +27,25 @@ import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.core.io.buffer.NettyDataBuffer;
 import org.springframework.util.MimeType;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.rsocket.broker.frames.Address;
+import io.rsocket.broker.frames.BrokerFrame;
+import io.rsocket.broker.frames.BrokerInfo;
+import io.rsocket.broker.frames.FrameHeaderFlyweight;
+import io.rsocket.broker.frames.FrameType;
+import io.rsocket.broker.frames.RouteJoin;
+import io.rsocket.broker.frames.RouteRemove;
+import io.rsocket.broker.frames.RouteSetup;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
+
+/**
+ * Spring {@link org.springframework.core.codec.Decoder} that converts {@link DataBuffer}
+ * to {@link BrokerFrame} subclasses. Reads the frame header to determine the frame type
+ * and delegates to the appropriate static factory method.
+ */
 public class BrokerFrameDecoder extends AbstractDecoder<BrokerFrame> {
 
 	public BrokerFrameDecoder() {

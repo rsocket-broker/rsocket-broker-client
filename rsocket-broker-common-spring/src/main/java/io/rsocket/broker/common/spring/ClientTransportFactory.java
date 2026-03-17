@@ -18,5 +18,8 @@ package io.rsocket.broker.common.spring;
 
 import io.rsocket.transport.ClientTransport;
 
+/**
+ * {@link TransportFactory} specialization for creating {@link ClientTransport} instances from URIs.
+ */
 public interface ClientTransportFactory extends TransportFactory<ClientTransport> {
 }

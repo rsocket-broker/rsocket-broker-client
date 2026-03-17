@@ -16,6 +16,10 @@
 
 package io.rsocket.broker.common;
 
+/**
+ * Constants for the broker frame MIME type used in composite metadata encoding.
+ * The MIME type {@code message/x.rsocket.broker.frame.v0} identifies broker protocol frames.
+ */
 public class MimeTypes {
 
 	public static final String MESSAGE_TYPE = "message";

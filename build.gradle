@@ -1,6 +1,5 @@
 plugins {
-	id 'com.jfrog.artifactory' version '4.21.0' apply false
-	id 'io.spring.dependency-management' version '1.1.4'
+	id 'io.spring.dependency-management' version '1.1.7'
 	id 'java'
     id 'maven-publish'
 }
@@ -10,20 +9,28 @@ subprojects {
 	apply plugin: 'java-library'
 	apply plugin: 'io.spring.dependency-management'
 	apply plugin: 'maven-publish'
-	apply plugin: 'com.jfrog.artifactory'
 	apply plugin: 'signing'
 
-	sourceCompatibility = '17'
+	java {
+		toolchain {
+			languageVersion = JavaLanguageVersion.of(21)
+		}
+	}
 
 	repositories {
 		mavenLocal()
+		maven {
+			def githubRepositoryOwner = System.getenv("GITHUB_REPOSITORY_OWNER") ?: System.getenv("GITHUB_ACTOR")
+			url = uri("https://maven.pkg.github.com/${githubRepositoryOwner}/rsocket-broker-client")
+			credentials {
+				username = project.findProperty("gpr.user") ?: githubRepositoryOwner
+				password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+			}
+		}
 		mavenCentral()
 		maven { url 'https://repo.spring.io/milestone' }
 		if (version.endsWith('SNAPSHOT')) {
 			maven { url 'https://repo.spring.io/snapshot' }
-			maven {
-				url 'https://oss.jfrog.org/artifactory/oss-snapshot-local'
-			}
 		}
 	}
 
@@ -41,6 +48,7 @@ subprojects {
 		implementation platform("io.projectreactor:reactor-bom:${reactorBomVersion}")
 		implementation platform("io.rsocket:rsocket-bom:${rsocketVersion}")
 		implementation platform("org.junit:junit-bom:${junitJupiterVersion}")
+		testRuntimeOnly "org.junit.platform:junit-platform-launcher"
 	}
 
 	java {

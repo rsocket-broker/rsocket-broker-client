@@ -18,6 +18,12 @@ package io.rsocket.broker.common.spring;
 
 import java.net.URI;
 
+/**
+ * Generic factory interface for creating transport instances from URIs.
+ * Supports probing via {@link #supports(URI)} and construction via {@link #create(URI)}.
+ *
+ * @param <TO_CREATE> the transport type to create
+ */
 public interface TransportFactory<TO_CREATE> {
 	boolean supports(URI uri);
 

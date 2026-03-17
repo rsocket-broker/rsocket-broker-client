@@ -18,12 +18,17 @@ package io.rsocket.broker.client.spring;
 
 import java.util.function.Consumer;
 
+import org.springframework.messaging.rsocket.RSocketRequester;
+
 import io.rsocket.broker.common.WellKnownKey;
 import io.rsocket.broker.common.spring.MimeTypes;
 import io.rsocket.broker.frames.Address;
 
-import org.springframework.messaging.rsocket.RSocketRequester;
-
+/**
+ * Helper bean that produces {@code Consumer<MetadataSpec>} lambdas for adding broker
+ * {@link Address} metadata to outgoing RSocket requests. Provides convenience
+ * methods for routing by service name or via a builder consumer.
+ */
 public class BrokerMetadata {
 
 	private final BrokerClientProperties properties;

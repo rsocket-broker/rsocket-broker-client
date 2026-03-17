@@ -18,10 +18,19 @@ package io.rsocket.broker.common.spring;
 
 import java.util.Map;
 
+import org.reactivestreams.Publisher;
+import org.springframework.core.ResolvableType;
+import org.springframework.core.codec.AbstractEncoder;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferFactory;
+import org.springframework.core.io.buffer.NettyDataBufferFactory;
+import org.springframework.util.MimeType;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.rsocket.broker.frames.Address;
 import io.rsocket.broker.frames.AddressFlyweight;
+import io.rsocket.broker.frames.BrokerFrame;
 import io.rsocket.broker.frames.BrokerInfo;
 import io.rsocket.broker.frames.BrokerInfoFlyweight;
 import io.rsocket.broker.frames.RouteJoin;
@@ -30,17 +39,13 @@ import io.rsocket.broker.frames.RouteRemove;
 import io.rsocket.broker.frames.RouteRemoveFlyweight;
 import io.rsocket.broker.frames.RouteSetup;
 import io.rsocket.broker.frames.RouteSetupFlyweight;
-import io.rsocket.broker.frames.BrokerFrame;
-import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 
-import org.springframework.core.ResolvableType;
-import org.springframework.core.codec.AbstractEncoder;
-import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferFactory;
-import org.springframework.core.io.buffer.NettyDataBufferFactory;
-import org.springframework.util.MimeType;
-
+/**
+ * Spring {@link org.springframework.core.codec.Encoder} that converts {@link BrokerFrame}
+ * subclasses to {@link DataBuffer}. Switches on frame type and delegates to the corresponding
+ * flyweight encoder to produce the binary representation.
+ */
 public class BrokerFrameEncoder extends AbstractEncoder<BrokerFrame> {
 
 	public BrokerFrameEncoder() {

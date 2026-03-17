@@ -1,7 +1,3 @@
-plugins {
-	id 'org.kordamp.gradle.insight' version '0.54.0'
-}
-
 rootProject.name = 'rsocket-broker-client'
 
 include "rsocket-broker-common"

@@ -23,6 +23,11 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * Immutable map of {@link Key} to {@link String} tag pairs used for routing and identification
+ * in the RSocket Broker protocol. Supports lookup by {@link WellKnownKey} or custom string key.
+ * Use {@link #builder()} to construct instances.
+ */
 public class Tags {
 
 	private static final Tags EMPTY = builder().buildTags();

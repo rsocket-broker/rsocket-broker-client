@@ -16,21 +16,26 @@
 
 package io.rsocket.broker.client.spring;
 
+import static io.rsocket.broker.client.spring.BrokerClientProperties.CONFIG_PREFIX;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.rsocket.broker.common.Id;
-import io.rsocket.broker.common.MutableKey;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.util.MimeType;
 
-import static io.rsocket.broker.client.spring.BrokerClientProperties.CONFIG_PREFIX;
+import io.rsocket.broker.common.Id;
+import io.rsocket.broker.common.MutableKey;
 
+/**
+ * Configuration properties for the RSocket Broker client, bound to the
+ * {@value #CONFIG_PREFIX} prefix. Configures route ID, service name, tags,
+ * broker URIs, and address routing patterns.
+ */
 @ConfigurationProperties(CONFIG_PREFIX)
 public class BrokerClientProperties {
 

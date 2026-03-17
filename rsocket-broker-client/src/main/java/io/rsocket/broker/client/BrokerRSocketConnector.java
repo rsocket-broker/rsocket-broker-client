@@ -27,21 +27,36 @@ import io.netty.buffer.CompositeByteBuf;
 import io.netty.buffer.Unpooled;
 import io.rsocket.Payload;
 import io.rsocket.RSocket;
+import io.rsocket.broker.common.Id;
+import io.rsocket.broker.common.MimeTypes;
+import io.rsocket.broker.common.Tags;
+import io.rsocket.broker.frames.RouteSetupFlyweight;
 import io.rsocket.core.RSocketClient;
 import io.rsocket.core.RSocketConnector;
 import io.rsocket.frame.decoder.PayloadDecoder;
 import io.rsocket.metadata.CompositeMetadataCodec;
 import io.rsocket.metadata.WellKnownMimeType;
-import io.rsocket.broker.common.Id;
-import io.rsocket.broker.common.MimeTypes;
-import io.rsocket.broker.common.Tags;
-import io.rsocket.broker.frames.RouteSetupFlyweight;
 import io.rsocket.transport.ClientTransport;
 import io.rsocket.util.DefaultPayload;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
 
+/**
+ * Builder for establishing RSocket connections to an RSocket Broker. Wraps {@link RSocketConnector}
+ * and adds broker-specific setup: encodes a {@link io.rsocket.broker.frames.RouteSetup} frame as
+ * setup metadata with route ID, service name, and tags.
+ *
+ * <p>Usage:
+ * <pre>{@code
+ * BrokerRSocketClient client = BrokerRSocketConnector.create()
+ *     .serviceName("my-service")
+ *     .routeId(Id.random())
+ *     .toRSocketClient(TcpClientTransport.create("localhost", 8001));
+ * }</pre>
+ *
+ * @see BrokerRSocketClient
+ */
 public class BrokerRSocketConnector {
 
 	private RSocketConnector delegate;

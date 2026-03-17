@@ -19,6 +19,10 @@ package io.rsocket.broker.common;
 import java.util.Objects;
 import java.util.StringJoiner;
 
+/**
+ * Immutable {@link Key} implementation holding either a {@link WellKnownKey} or a custom
+ * string key (mutually exclusive). Created via {@link Key#of(String)} or {@link Key#of(WellKnownKey)}.
+ */
 public class ImmutableKey implements Key {
 
 	private final WellKnownKey wellKnownKey;

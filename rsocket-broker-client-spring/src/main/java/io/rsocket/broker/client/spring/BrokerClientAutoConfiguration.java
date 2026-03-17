@@ -16,7 +16,26 @@
 
 package io.rsocket.broker.client.spring;
 
+import static io.rsocket.broker.client.spring.BrokerClientProperties.CONFIG_PREFIX;
+
 import java.net.URI;
+
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.rsocket.autoconfigure.RSocketRequesterAutoConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+import org.springframework.messaging.rsocket.RSocketConnectorConfigurer;
+import org.springframework.messaging.rsocket.RSocketRequester;
+import org.springframework.messaging.rsocket.RSocketStrategies;
+import org.springframework.messaging.rsocket.annotation.support.RSocketMessageHandler;
+import org.springframework.util.CollectionUtils;
 
 import io.rsocket.RSocket;
 import io.rsocket.broker.common.spring.ClientTransportFactory;
@@ -28,26 +47,14 @@ import reactor.core.Disposable;
 import reactor.core.publisher.Sinks;
 import reactor.core.publisher.Sinks.One;
 
-import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.rsocket.RSocketRequesterAutoConfiguration;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
-import org.springframework.messaging.rsocket.RSocketConnectorConfigurer;
-import org.springframework.messaging.rsocket.RSocketRequester;
-import org.springframework.messaging.rsocket.RSocketStrategies;
-import org.springframework.messaging.rsocket.annotation.support.RSocketMessageHandler;
-import org.springframework.util.CollectionUtils;
 
-import static io.rsocket.broker.client.spring.BrokerClientProperties.CONFIG_PREFIX;
-
-
+/**
+ * Spring Boot auto-configuration for the RSocket Broker client. Creates
+ * {@link BrokerRSocketRequesterBuilder}, configures the RSocket connector with broker
+ * setup metadata, and optionally auto-connects to the first configured broker URI.
+ *
+ * @see BrokerClientProperties
+ */
 @Configuration
 @EnableConfigurationProperties
 @ConditionalOnClass({RSocket.class, RSocketRequester.class})

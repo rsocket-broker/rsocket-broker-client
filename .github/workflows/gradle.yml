@@ -1,36 +1,36 @@
-# This workflow will build a Java project with Gradle
-# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
-
-name: Java CI with Gradle
+name: Gradle Package
 
 on:
   push:
-    branches: [ master ]
+    branches: ["main"]
   schedule:
-    # * is a special character in YAML so you have to quote this string
-    - cron:  '0 6 * * *'
+    - cron: "0 6 * * *"
 jobs:
   build:
-
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up JDK 17
-      uses: actions/setup-java@v3
-      with:
-        java-version: 17
-        distribution: 'temurin'
-    - name: Cache Gradle packages
-      uses: actions/cache@v3
-      with:
-        path: ~/.gradle/caches
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-        restore-keys: ${{ runner.os }}-gradle
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    - name: Build with Gradle
-      run: ./gradlew -PversionSuffix="-SNAPSHOT" -PbuildNumber="${buildNumber}" build publishMavenPublicationToGitHubPackagesRepository --no-daemon --stacktrace
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        buildNumber: ${{ github.run_number }}
+      - uses: actions/checkout@v5
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          java-version: "21"
+          distribution: "temurin"
+          cache: "gradle"
+          server-id: github
+          settings-path: ${{ github.workspace }}
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Publish to GitHub Packages
+        run: ./gradlew -PversionSuffix="-SNAPSHOT" -PbuildNumber="${buildNumber}" build publishMavenPublicationToGitHubPackagesRepository --no-daemon --stacktrace
+        env:
+          buildNumber: ${{ github.run_number }}

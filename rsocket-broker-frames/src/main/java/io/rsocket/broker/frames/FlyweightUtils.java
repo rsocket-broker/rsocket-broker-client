@@ -22,6 +22,11 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.rsocket.broker.common.Id;
 
+/**
+ * Shared utility methods for low-level binary encoding and decoding used across
+ * broker frame flyweight classes. Handles {@link Id} (16-byte UUID as two longs)
+ * and byte-string (unsigned-byte-length-prefixed UTF-8) encoding.
+ */
 public class FlyweightUtils {
 
 	public static final int ID_BYTES = 16;

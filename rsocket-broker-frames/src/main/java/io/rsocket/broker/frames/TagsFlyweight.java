@@ -27,6 +27,12 @@ import io.rsocket.broker.common.Key;
 import io.rsocket.broker.common.Tags;
 import io.rsocket.broker.common.WellKnownKey;
 
+/**
+ * Flyweight for encoding and decoding tag key-value pairs in the binary wire format.
+ * Well-known keys use a single byte (with {@code 0x80} flag), custom keys are
+ * length-prefixed UTF-8 strings. The {@code 0x80} bit on value length indicates
+ * more tags follow.
+ */
 public class TagsFlyweight {
 	private static final int WELL_KNOWN_TAG = 0x80;
 	private static final int HAS_MORE_TAGS = 0x80;

@@ -22,6 +22,11 @@ import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.CompositeByteBuf;
 import io.rsocket.broker.frames.Address;
 
+/**
+ * Contract for encoding broker {@link Address} metadata into composite metadata buffers.
+ * Implementations provide the route's origin ID and encode ADDRESS frames for routing
+ * requests through the broker.
+ */
 public interface Route {
 	ByteBufAllocator allocator();
 

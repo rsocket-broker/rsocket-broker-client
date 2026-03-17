@@ -20,20 +20,25 @@ import java.net.URI;
 import java.util.List;
 import java.util.function.Consumer;
 
-import io.rsocket.loadbalance.LoadbalanceStrategy;
-import io.rsocket.loadbalance.LoadbalanceTarget;
-import io.rsocket.transport.ClientTransport;
-import io.rsocket.transport.netty.client.TcpClientTransport;
-import io.rsocket.transport.netty.client.WebsocketClientTransport;
 import org.reactivestreams.Publisher;
-import reactor.core.publisher.Mono;
-
 import org.springframework.messaging.rsocket.RSocketConnectorConfigurer;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.messaging.rsocket.RSocketStrategies;
 import org.springframework.util.MimeType;
 import org.springframework.util.RouteMatcher;
 
+import io.rsocket.loadbalance.LoadbalanceStrategy;
+import io.rsocket.loadbalance.LoadbalanceTarget;
+import io.rsocket.transport.ClientTransport;
+import io.rsocket.transport.netty.client.TcpClientTransport;
+import io.rsocket.transport.netty.client.WebsocketClientTransport;
+import reactor.core.publisher.Mono;
+
+/**
+ * Decorator around Spring's {@link RSocketRequester.Builder} that wraps all built
+ * requesters in {@link BrokerRSocketRequester}, ensuring broker routing capabilities
+ * are automatically applied.
+ */
 public class BrokerRSocketRequesterBuilder implements RSocketRequester.Builder {
 
 	private final RSocketRequester.Builder delegate;

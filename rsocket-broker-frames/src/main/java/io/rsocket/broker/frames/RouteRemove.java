@@ -23,7 +23,8 @@ import io.netty.buffer.ByteBuf;
 import io.rsocket.broker.common.Id;
 
 /**
- * Representation of decoded RouteSetup information.
+ * Representation of decoded RouteRemove information. Indicates that a routable
+ * destination is no longer available and should be removed from the routing table.
  */
 public final class RouteRemove extends BrokerFrame {
 

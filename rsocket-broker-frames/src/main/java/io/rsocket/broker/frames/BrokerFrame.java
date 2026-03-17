@@ -16,6 +16,16 @@
 
 package io.rsocket.broker.frames;
 
+/**
+ * Abstract base class for all decoded broker frames. Stores the {@link FrameType}
+ * and flags common to all frame types in the RSocket Broker protocol.
+ *
+ * @see RouteSetup
+ * @see Address
+ * @see BrokerInfo
+ * @see RouteJoin
+ * @see RouteRemove
+ */
 public abstract class BrokerFrame {
 	private final FrameType frameType;
 	private final int flags;

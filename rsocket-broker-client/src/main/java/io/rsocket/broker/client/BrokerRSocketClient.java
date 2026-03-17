@@ -18,21 +18,27 @@ package io.rsocket.broker.client;
 
 import java.util.function.Consumer;
 
+import org.reactivestreams.Publisher;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.CompositeByteBuf;
 import io.rsocket.Payload;
 import io.rsocket.RSocket;
-import io.rsocket.core.RSocketClient;
-import io.rsocket.metadata.CompositeMetadataCodec;
 import io.rsocket.broker.common.MimeTypes;
 import io.rsocket.broker.common.WellKnownKey;
 import io.rsocket.broker.frames.Address;
 import io.rsocket.broker.frames.AddressFlyweight;
-import org.reactivestreams.Publisher;
+import io.rsocket.core.RSocketClient;
+import io.rsocket.metadata.CompositeMetadataCodec;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+/**
+ * {@link RSocketClient} decorator that adds broker {@link Address} metadata encoding.
+ * Wraps an underlying RSocketClient and provides {@link Route} methods for attaching
+ * broker routing metadata to outgoing requests.
+ */
 public class BrokerRSocketClient implements RSocketClient, Route {
 
 	private final BrokerRSocketConnector connector;

@@ -19,6 +19,11 @@ package io.rsocket.broker.common;
 import java.util.Objects;
 import java.util.StringJoiner;
 
+/**
+ * Mutable {@link Key} implementation primarily used for Spring configuration property binding.
+ * Accepts a string that is first tried as a {@link WellKnownKey} enum name, falling back
+ * to a custom string key.
+ */
 public class MutableKey implements Key {
 
 	private WellKnownKey wellKnownKey;

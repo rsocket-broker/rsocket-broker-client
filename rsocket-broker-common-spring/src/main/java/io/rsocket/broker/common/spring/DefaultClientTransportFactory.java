@@ -22,6 +22,10 @@ import io.rsocket.transport.ClientTransport;
 import io.rsocket.transport.netty.client.TcpClientTransport;
 import io.rsocket.transport.netty.client.WebsocketClientTransport;
 
+/**
+ * Default {@link ClientTransportFactory} that creates TCP or WebSocket
+ * {@link ClientTransport} instances based on the URI scheme ({@code tcp}, {@code ws}, {@code wss}).
+ */
 public class DefaultClientTransportFactory implements ClientTransportFactory {
 
 	@Override

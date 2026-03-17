@@ -21,16 +21,6 @@ import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.rsocket.RSocket;
-import io.rsocket.core.RSocketClient;
-import io.rsocket.broker.common.Id;
-import io.rsocket.broker.common.Key;
-import io.rsocket.broker.common.WellKnownKey;
-import io.rsocket.broker.common.spring.MimeTypes;
-import io.rsocket.broker.frames.Address;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.lang.Nullable;
 import org.springframework.messaging.rsocket.RSocketRequester;
@@ -40,6 +30,21 @@ import org.springframework.util.MimeType;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.RouteMatcher;
 
+import io.rsocket.RSocket;
+import io.rsocket.broker.common.Id;
+import io.rsocket.broker.common.Key;
+import io.rsocket.broker.common.WellKnownKey;
+import io.rsocket.broker.common.spring.MimeTypes;
+import io.rsocket.broker.frames.Address;
+import io.rsocket.core.RSocketClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+/**
+ * {@link RSocketRequester} wrapper that adds broker routing to outgoing requests.
+ * The {@link #route(String, Object...)} method matches routes against configured address
+ * patterns and automatically attaches {@link Address} metadata for broker-based forwarding.
+ */
 public class BrokerRSocketRequester implements RSocketRequester {
 
 	/** For route variable replacement. */

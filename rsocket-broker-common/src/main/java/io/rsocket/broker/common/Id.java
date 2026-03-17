@@ -19,6 +19,11 @@ package io.rsocket.broker.common;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * A 128-bit identifier stored as two longs (most and least significant bits of a UUID).
+ * Used as the fundamental identifier for routes ({@code routeId}) and brokers ({@code brokerId})
+ * throughout the RSocket Broker protocol.
+ */
 public class Id {
 	private final long first;
 	private final long second;

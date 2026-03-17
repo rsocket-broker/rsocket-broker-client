@@ -19,6 +19,11 @@ package io.rsocket.broker.frames;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Routing type flags used in {@link Address} frames to determine how the broker
+ * forwards requests: {@link #UNICAST} (single destination), {@link #MULTICAST}
+ * (all matching destinations), or {@link #SHARD} (consistent hashing).
+ */
 public enum RoutingType {
 	UNICAST(AddressFlyweight.FLAGS_U),
 	MULTICAST(AddressFlyweight.FLAGS_M),
